@@ -1,2 +1,2 @@
-# DestinationTitanGame2
-A training version of destination titan
+# DestinationTitanGame
+Corona Labs Video Game for destination titan
