@@ -8,7 +8,23 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+local physics = require("physics")
+physics.start()
+physics.setGravity(0, 0)
 
+-- Image sheet
+local sheetOptions = 
+{
+	frames = 
+	{
+		{-- rover
+		},
+		{-- sandstorm
+		},
+		{-- enemies
+		},
+	},
+}
 
 
 -- -----------------------------------------------------------------------------------
@@ -20,9 +36,21 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-
+	local background = display.newImageRect(sceneGroup, "gamebackground.png", 1400, 800)
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
 end
 
+local score = 0
+local died = false
+
+local rover
+local gameLoopTimer
+local scoreText
+
+local backGroup
+local mainGroup
+local uiGroup
 
 -- show()
 function scene:show( event )

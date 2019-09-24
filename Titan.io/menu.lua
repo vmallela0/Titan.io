@@ -28,9 +28,14 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-	local background = display.newImageRect(sceneGroup, "background.png", 800, 1400)
-end
+	local background = display.newImageRect(sceneGroup, "background.png", 1400, 800)
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
 
+	local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 437, native.systemFont, 100)
+	playButton:setFillColor(0, 0, 0)
+
+	playButton:addEventListener("tap", gotoGame)end
 
 -- show()
 function scene:show( event )
