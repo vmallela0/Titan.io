@@ -19,9 +19,10 @@ local sheetOptions =
 	{
 		{-- rover
 		},
-		{-- sandstorm
+		{-- ||| sandstorm function used here |||
+		
 		},
-		{-- enemies
+		{-- enemies 
 		},
 	},
 }
@@ -41,7 +42,36 @@ function scene:create( event )
 	background.y = display.contentCenterY
 end
 
-local score = 0
+local enemyScore = 15
+
+--import log
+--local radius = math.log(score) + 15
+--Make randomization function here
+--function randomEnemy()
+-- SPAWN ENEMIES AT SLOW RATE 
+-- WE WANT 10 ENEMIES AT ALL TIMES IN EVERY ROOM
+-- 
+--end
+
+-- function randomCargo()
+-- 	reuse rand code from enemyScore
+-- 	we want 50 cargos generated per minute in game
+-- 	spaced out if possible later
+-- 	add score here too ==> adding scores after eating a cargo
+-- end
+
+
+local score = 15
+--local radius = math.log(score) + 15
+
+
+--make sandstorm's radius applicable
+--function sandstorm()
+	--sandstorm.scale(radius)
+	--if ((sandstorm.x + 2 >= enemy.x) or (sandstorm.x - 2 >= enemy.x) and ((sandstorm.y + 2 >= enemy.y) or (sandstorm.y - 2 <= enemy.y))
+--end
+
+
 local died = false
 
 local rover
