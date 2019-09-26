@@ -47,6 +47,8 @@ local enmeyScore = 0
 local score = 0
 local died = false
 
+local enemyTable = {}
+
 local rover
 local cargo
 local sandstorm
@@ -78,7 +80,7 @@ local function spawnEnemy()
 	enemyStorm.x = math.random(300, 800)
 	enemyStorm.y = math.random(100, 300)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
-	enemyStorm:setLinearVelocity(10, 10)
+	enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
 	enemyStorm:applyTorque(11)
 end
 
@@ -118,7 +120,9 @@ local function dragSelf(event)
 end
 
 local function gameLoop()
+	spawnEnemy()
 
+	
 end
 
 -- -----------------------------------------------------------------------------------------------------------------
@@ -155,13 +159,13 @@ function scene:create( event )
 	local sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
 	sandstorm.x = 500 
 	sandstorm.y = 500
-	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0})
+	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
 	sandstorm.fill.scaleX = 1
 	sandstorm.fill.scaleY = 1
 
 	-- Sensor type the sandstorm
-	physics.addBody(sandstorm, {radius = 30, isSensor = true})
+	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
 
 	-- Event listener
@@ -182,6 +186,7 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
+		gameLoopTimer = timer.performWithDelay(3000, gameLoop, 0)
 	end
 end
 
@@ -210,7 +215,6 @@ function scene:destroy( event )
 	-- Code here runs prior to the removal of scene's view
 
 end
-
 
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
