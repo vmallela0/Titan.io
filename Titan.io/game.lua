@@ -22,8 +22,8 @@ local sheetOptions =
 		{-- Cargo
 			x = 1,
 			y = 3,
-			width = 87,
-			height = 87
+			width = 65,
+			height = 65
 		},
 		{-- sandstorm
 			x = 110,
