@@ -42,6 +42,9 @@ local sheetOptions =
 
 local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
+
+local enmeyScore = 0
+local score = 0
 local died = false
 
 local rover
@@ -70,8 +73,15 @@ local uiGroup
 -- 	add score here too ==> adding scores after eating a cargo
 -- end
 
+local function spawnEnemy()
+	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
+	enemyStorm.x = math.random(300, 800)
+	enemyStorm.y = math.random(100, 300)
+	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
+	enemyStorm:setLinearVelocity(10, 10)
+	enemyStorm:applyTorque(11)
+end
 
-local score = 0
 --local radius = math.log(score) + 15
 
 
@@ -81,19 +91,47 @@ local score = 0
 	--if ((sandstorm.x + 2 >= enemy.x) or (sandstorm.x - 2 >= enemy.x) and ((sandstorm.y + 2 >= enemy.y) or (sandstorm.y - 2 <= enemy.y))
 --end
 
+--following is spawn cargo, idk when to use it:
+-- local cargo = display.newImageRect(mainGroup, objectSheet, 2, 87, 87)
+-- cargo.x = 500
+-- cargo.y = 500
+
+local function updateText()
+	scoreText.text = "Score: ".. score
+end
+
+local function dragSelf(event)
+	local sandstorm = event.target
+	local phase = event.phase
+
+	if("began" == phase) then 
+		display.currentStage:setFocus(sandstorm)
+		sandstorm.touchOffsetX = event.x - sandstorm.x
+		sandstorm.touchOffsetY = event.y - sandstorm.y
+	elseif("moved" == phase) then
+		timer.performWithDelay(200, function () sandstorm.x = event.x - sandstorm.touchOffsetX
+		sandstorm.y = event.y - sandstorm.touchOffsetY end)
+	elseif("ended" == phase or "cancelled" == phase) then 
+		display.currentStage:setFocus(nil)
+	end
+	return true
+end
+
 local function gameLoop()
 
 end
 
--- -----------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------
 -- Scene event functions
--- -----------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------
 
--- create()
+-- create()-----------------------------------------------------------------------------------------------------------------
 function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
+
+	physics.pause()
 
 	backGroup = display.newGroup() 
 	sceneGroup:insert(backGroup) 
@@ -101,34 +139,36 @@ function scene:create( event )
 	mainGroup = display.newGroup() 
 	sceneGroup:insert(mainGroup)
 
+	uiGroup = display.newGroup()
+	sceneGroup:insert(uiGroup)
+
 	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	local cargo = display.newImageRect(mainGroup, objectSheet, 2, 87, 87)
-	cargo.x = 500
-	cargo.y = 500
+	-- score Text 
+	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
+	scoreText:setFillColor(0, 0, 0)
 
-	local enemyScore = 15
 
+	-- spawn self
 	local sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
-	sandstorm.x = 600 
-	sandstorm.y = 700
-	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0.8})
-	sandstorm:setLinearVelocity(-30, -30)
-	sandstorm:applyTorque(-11)
+	sandstorm.x = 500 
+	sandstorm.y = 500
+	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0})
+	sandstorm:applyTorque(-15)
 
-	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
-	enemyStorm.x = math.random(200, 1000)
-	enemyStorm.y = math.random(100, 300)
-	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
-	enemyStorm:setLinearVelocity(10, 10)
-	enemyStorm:applyTorque(11)
+	-- Sensor type the sandstorm
+	physics.addBody(sandstorm, {radius = 30, isSensor = true})
+	sandstorm.myName = "self"
+
+	-- Event listener
+	sandstorm:addEventListener("touch", dragSelf)
 
 end
 
 
--- show()
+-- show event -----------------------------------------------------------------------------------------------------------------
 function scene:show( event )
 
 	local sceneGroup = self.view
@@ -139,12 +179,12 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-
+		physics.start()
 	end
 end
 
 
--- hide()
+-- hide() event -----------------------------------------------------------------------------------------------------------------
 function scene:hide( event )
 
 	local sceneGroup = self.view
@@ -155,12 +195,13 @@ function scene:hide( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
-
+		physics.pause()
+		composer.removeScene("game")
 	end
 end
 
 
--- destroy()
+-- destroy() -----------------------------------------------------------------------------------------------------------------
 function scene:destroy( event )
 
 	local sceneGroup = self.view
