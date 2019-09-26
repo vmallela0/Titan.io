@@ -42,8 +42,9 @@ local sheetOptions =
 
 local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
+local sandstorm
 
-local enmeyScore = 0
+local enemyScore = 0
 local score = 0
 local died = false
 
@@ -77,6 +78,8 @@ local uiGroup
 
 local function spawnEnemy()
 	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
+	table.insert(enemyTable, enemyStorm)
+	enemyStorm.myName = "enemy"
 	enemyStorm.x = math.random(300, 800)
 	enemyStorm.y = math.random(100, 300)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
@@ -119,12 +122,6 @@ local function dragSelf(event)
 	return true
 end
 
-local function gameLoop()
-	spawnEnemy()
-
-	
-end
-
 -- -----------------------------------------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------------------------------------
@@ -156,7 +153,7 @@ function scene:create( event )
 
 
 	-- spawn self
-	local sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
+	sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
 	sandstorm.x = 500 
 	sandstorm.y = 500
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
@@ -168,9 +165,11 @@ function scene:create( event )
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
 
+
+	
 	-- Event listener
 	sandstorm:addEventListener("touch", dragSelf)
-
+	
 end
 
 
@@ -179,6 +178,27 @@ function scene:show( event )
 
 	local sceneGroup = self.view
 	local phase = event.phase
+	local function gameLoop()
+		spawnEnemy()
+		for i = #enemyTable, 1, -1 do
+			local deleteEnemy = enemyTable[i]
+	
+			if(
+				-- deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
+				-- deleteEnemy.y < -100 or
+				-- deleteEnemy.y > display.contentHeight + 100 
+				-- or 
+				deleteEnemy.x -40 <= sandstorm.x and deleteEnemy.x + 40 >= sandstorm.x and 
+				deleteEnemy.y -40 <= sandstorm.y and deleteEnemy.y + 40 >= sandstorm.y)
+				
+			then 
+				display.remove(deleteEnemy) 
+				table.remove(enemyTable, i)
+				print("test")
+			end
+		end
+	end
+
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
@@ -186,7 +206,9 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
-		gameLoopTimer = timer.performWithDelay(3000, gameLoop, 0)
+
+		gameLoopTimer = timer.performWithDelay(500, gameLoop, 0)
+		
 	end
 end
 
