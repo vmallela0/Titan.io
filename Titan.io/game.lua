@@ -157,6 +157,8 @@ function scene:create( event )
 	sandstorm.y = 500
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0})
 	sandstorm:applyTorque(-15)
+	sandstorm.fill.scaleX = 1
+	sandstorm.fill.scaleY = 1
 
 	-- Sensor type the sandstorm
 	physics.addBody(sandstorm, {radius = 30, isSensor = true})
