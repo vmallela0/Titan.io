@@ -43,8 +43,6 @@ local sheetOptions =
 
 local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
-local sandstorm
-
 local enemyScore = 0
 local score = 0
 local died = false
@@ -115,13 +113,17 @@ local function dragSelf(event)
 		sandstorm.touchOffsetX = event.x - sandstorm.x
 		sandstorm.touchOffsetY = event.y - sandstorm.y
 	elseif("moved" == phase) then
-		timer.performWithDelay(200, function () sandstorm.x = event.x - sandstorm.touchOffsetX
-		sandstorm.y = event.y - sandstorm.touchOffsetY end)
+		-- timer.performWithDelay(200, function () 
+		sandstorm.x = event.x - sandstorm.touchOffsetX
+		sandstorm.y = event.y - sandstorm.touchOffsetY 
+	-- end)
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
 	end
 	return true
 end
+
+
 
 -- -----------------------------------------------------------------------------------------------------------------
 -- Scene event functions
@@ -152,7 +154,6 @@ function scene:create( event )
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
 	scoreText:setFillColor(0, 0, 0)
 
-
 	-- spawn self
 	sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
 	sandstorm.x = 500 
@@ -167,7 +168,6 @@ function scene:create( event )
 	sandstorm.myName = "self"
 
 
-	
 	-- Event listener
 	sandstorm:addEventListener("touch", dragSelf)
 	
@@ -179,6 +179,12 @@ function scene:show( event )
 
 	local sceneGroup = self.view
 	local phase = event.phase
+
+	local function grow()
+		sandstorm.xScale = score
+		sandstorm.yScale = score
+	end
+
 	local function gameLoop()
 		spawnEnemy()
 		for i = #enemyTable, 1, -1 do
@@ -189,13 +195,14 @@ function scene:show( event )
 				-- deleteEnemy.y < -100 or
 				-- deleteEnemy.y > display.contentHeight + 100 
 				-- or 
-				deleteEnemy.x -40 <= sandstorm.x and deleteEnemy.x + 40 >= sandstorm.x and 
-				deleteEnemy.y -40 <= sandstorm.y and deleteEnemy.y + 40 >= sandstorm.y)
-				
+				deleteEnemy.x -45 <= sandstorm.x and deleteEnemy.x + 45 >= sandstorm.x and 
+				deleteEnemy.y -45 <= sandstorm.y and deleteEnemy.y + 45 >= sandstorm.y)
 			then 
 				display.remove(deleteEnemy) 
 				table.remove(enemyTable, i)
-				print("test")
+				score = score + 1
+				updateText()
+				grow()
 			end
 		end
 	end
