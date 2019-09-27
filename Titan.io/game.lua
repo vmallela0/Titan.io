@@ -1,3 +1,4 @@
+require "math"
 
 local composer = require( "composer" )
 
@@ -60,14 +61,10 @@ local backGroup
 local mainGroup
 local uiGroup
 
---import log
---local radius = math.log(score) + 15
---Make randomization function here
---function randomEnemy()
--- SPAWN ENEMIES AT SLOW RATE 
--- WE WANT 10 ENEMIES AT ALL TIMES IN EVERY ROOM
--- 
---end
+local enemyCount = 0
+
+local radius = math.log(score) + 15
+
 
 -- function randomCargo()
 -- 	reuse rand code from enemyScore
@@ -77,17 +74,21 @@ local uiGroup
 -- end
 
 local function spawnEnemy()
-	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
-	table.insert(enemyTable, enemyStorm)
-	enemyStorm.myName = "enemy"
-	enemyStorm.x = math.random(300, 800)
-	enemyStorm.y = math.random(100, 300)
-	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
-	enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
-	enemyStorm:applyTorque(11)
+	while enemyCount < 10
+	do
+		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
+		table.insert(enemyTable, enemyStorm)
+		enemyStorm.myName = "enemy"
+		enemyStorm.x = math.random(300, 800)
+		enemyStorm.y = math.random(100, 300)
+		physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
+		enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
+		enemyStorm:applyTorque(11)
+		enemyCount=enemyCount+1
+	end
 end
 
---local radius = math.log(score) + 15
+local radius = math.log(score) + 15
 
 
 --make sandstorm's radius applicable
