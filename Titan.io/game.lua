@@ -14,6 +14,7 @@ physics.start()
 physics.setGravity(0, 0)
 
 -- Image sheet
+-- Scale elements so that it is proportional to the screen size. for reference look at config
 local sheetOptions = 
 {
 	frames = 
@@ -41,14 +42,17 @@ local sheetOptions =
 	},
 }
 
+--sprite initialization
 local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
+--score and player info init
 local enemyScore = 0
 local score = 0
 local died = false
 
 local enemyTable = {}
 
+--game objects
 local rover
 local cargo
 local sandstorm
@@ -59,7 +63,7 @@ local backGroup
 local mainGroup
 local uiGroup
 
-local enemyCount = 0
+--local enemyCount = 0
 
 -- function randomCargo()
 -- 	reuse rand code from enemyScore
@@ -71,9 +75,14 @@ local enemyCount = 0
 local function spawnEnemy()
 	-- while enemyCount < 10
 	-- do
+
+	-- we will need to add the enemyCount cap because it is finite and the map needs to be regulated
+
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
+
+		-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
 		enemyStorm.x = math.random(300, 800)
 		enemyStorm.y = math.random(100, 300)
 		physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
@@ -94,6 +103,7 @@ end
 -- cargo.x = 500
 -- cargo.y = 500
 
+--score text
 local function updateText()
 	scoreText.text = "Score: ".. score
 end
