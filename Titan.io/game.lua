@@ -1,4 +1,4 @@
-require "math"
+-- require "math"
 
 local composer = require( "composer" )
 
@@ -61,9 +61,6 @@ local uiGroup
 
 local enemyCount = 0
 
-local radius = math.log(score) + 15
-
-
 -- function randomCargo()
 -- 	reuse rand code from enemyScore
 -- 	we want 50 cargos generated per minute in game
@@ -72,8 +69,8 @@ local radius = math.log(score) + 15
 -- end
 
 local function spawnEnemy()
-	while enemyCount < 10
-	do
+	-- while enemyCount < 10
+	-- do
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
@@ -82,12 +79,9 @@ local function spawnEnemy()
 		physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 		enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
 		enemyStorm:applyTorque(11)
-		enemyCount=enemyCount+1
-	end
+		-- enemyCount=enemyCount+1
+	-- end
 end
-
-local radius = math.log(score) + 15
-
 
 --make sandstorm's radius applicable
 --function sandstorm()
@@ -112,12 +106,10 @@ local function dragSelf(event)
 		display.currentStage:setFocus(sandstorm)
 		sandstorm.touchOffsetX = event.x - sandstorm.x
 		sandstorm.touchOffsetY = event.y - sandstorm.y
-
 	elseif("moved" == phase) then
-		timer.performWithDelay(200, function () 
+		-- timer.performWithDelay(200, function () 
 		sandstorm.x = event.x - sandstorm.touchOffsetX
-		sandstorm.y = event.y - sandstorm.touchOffsetY 
-
+		sandstorm.y = event.y - sandstorm.touchOffsetY
 		-- Force applyer, doesnt work well
 		-- local fx = event.x - sandstorm.x
 		-- local fy = event.y - sandstorm.y
@@ -128,7 +120,6 @@ local function dragSelf(event)
 		-- end
 		-- local forceScale = .1
 		-- sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
-	-- end)
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
 	end
@@ -193,8 +184,8 @@ function scene:show( event )
 	local phase = event.phase
 
 	local function grow()
-		sandstorm.xScale = 1 + (score / 5)
-		sandstorm.yScale = 1 + (score / 5)
+		sandstorm.xScale = radius
+		sandstorm.yScale = radius
 	end
 
 	local function gameLoop()
@@ -218,6 +209,8 @@ function scene:show( event )
 				score = score + 1
 				updateText()
 				grow()
+				radius = math.log(score) + 1
+
 			end
 		end
 	end
