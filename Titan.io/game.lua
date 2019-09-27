@@ -111,10 +111,22 @@ local function dragSelf(event)
 		display.currentStage:setFocus(sandstorm)
 		sandstorm.touchOffsetX = event.x - sandstorm.x
 		sandstorm.touchOffsetY = event.y - sandstorm.y
+
 	elseif("moved" == phase) then
-		-- timer.performWithDelay(200, function () 
+		timer.performWithDelay(200, function () 
 		sandstorm.x = event.x - sandstorm.touchOffsetX
 		sandstorm.y = event.y - sandstorm.touchOffsetY 
+
+		-- Force applyer, doesnt work well
+		-- local fx = event.x - sandstorm.x
+		-- local fy = event.y - sandstorm.y
+		-- local fm = math.sqrt(fx * fx + fy * fy)
+		-- if fm > 0 then 
+		-- 	fx = fx / fm
+		-- 	fy = fy / fm
+		-- end
+		-- local forceScale = .1
+		-- sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
 	-- end)
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
@@ -180,8 +192,8 @@ function scene:show( event )
 	local phase = event.phase
 
 	local function grow()
-		sandstorm.xScale = score
-		sandstorm.yScale = score
+		sandstorm.xScale = 1 + (score / 5)
+		sandstorm.yScale = 1 + (score / 5)
 	end
 
 	local function gameLoop()
@@ -189,13 +201,16 @@ function scene:show( event )
 		for i = #enemyTable, 1, -1 do
 			local deleteEnemy = enemyTable[i]
 	
-			if(
-				-- deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
-				-- deleteEnemy.y < -100 or
-				-- deleteEnemy.y > display.contentHeight + 100 
-				-- or 
-				deleteEnemy.x -45 <= sandstorm.x and deleteEnemy.x + 45 >= sandstorm.x and 
-				deleteEnemy.y -45 <= sandstorm.y and deleteEnemy.y + 45 >= sandstorm.y)
+			if
+				deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
+				deleteEnemy.y < -100 or
+				deleteEnemy.y > display.contentHeight + 100
+			then 
+				display.remove(deleteEnemy)
+				table.remove(enemyTable, i)
+			elseif
+				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
+				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y
 			then 
 				display.remove(deleteEnemy) 
 				table.remove(enemyTable, i)
