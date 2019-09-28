@@ -81,13 +81,15 @@ local function spawnEnemy()
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
-
+		local enemyScore = math.random(1, 3)
+		enemyStorm.xScale = enemyScore
+		enemyStorm.yScale = enemyScore
 		-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
-		enemyStorm.x = math.random(300, 800)
-		enemyStorm.y = math.random(100, 300)
+		enemyStorm.x = math.random(0, display.contentWidth)
+		enemyStorm.y = math.random(0, display.contentHeight)
 		physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
-		enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
-		enemyStorm:applyTorque(11)
+		enemyStorm:setLinearVelocity(math.random(200, 200), math.random(-200, 200))
+		enemyStorm:applyTorque(10)
 		-- enemyCount=enemyCount+1
 	-- end
 end
