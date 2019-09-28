@@ -119,8 +119,10 @@ local function dragSelf(event)
 		sandstorm.touchOffsetY = event.y - sandstorm.y
 	elseif("moved" == phase) then
 		-- timer.performWithDelay(200, function () 
-		sandstorm.x = event.x - sandstorm.touchOffsetX
-		sandstorm.y = event.y - sandstorm.touchOffsetY
+
+		--Please don't change this -->>
+		sandstorm.touchOffsetX = event.x - sandstorm.x
+		sandstorm.touchOffsetY = event.y - sandstorm.y
 		-- Force applyer, doesnt work well
 		-- local fx = event.x - sandstorm.x
 		-- local fy = event.y - sandstorm.y
