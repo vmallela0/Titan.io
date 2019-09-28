@@ -173,8 +173,7 @@ function scene:create( event )
 	sandstorm.y = 500
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
-	sandstorm.fill.scaleX = 1
-	sandstorm.fill.scaleY = 1
+
 
 	-- Sensor type the sandstorm
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
@@ -194,8 +193,8 @@ function scene:show( event )
 	local phase = event.phase
 
 	local function grow()
-		sandstorm.xScale = radius
-		sandstorm.yScale = radius
+		sandstorm.xScale = size
+		sandstorm.yScale = size
 	end
 
 	local function gameLoop()
@@ -218,8 +217,8 @@ function scene:show( event )
 				table.remove(enemyTable, i)
 				score = score + 1
 				updateText()
+				size = 1 + math.log(score)
 				grow()
-				radius = math.log(score) + 1
 
 			end
 		end
