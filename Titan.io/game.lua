@@ -46,7 +46,6 @@ local sheetOptions =
 local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
 --score and player info init
-local enemyScore = 0
 local score = 0
 local died = false
 
@@ -81,9 +80,9 @@ local function spawnEnemy()
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
-		local enemyScore = math.random(1, 3)
-		enemyStorm.xScale = enemyScore
-		enemyStorm.yScale = enemyScore
+		enemyScore = math.random(1, 5)
+		enemyStorm.xScale = 1 + math.log(enemyScore)
+		enemyStorm.yScale = 1 + math.log(enemyScore)
 		-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
 		enemyStorm.x = math.random(0, display.contentWidth)
 		enemyStorm.y = math.random(0, display.contentHeight)
@@ -201,6 +200,7 @@ function scene:show( event )
 
 	local function gameLoop()
 		spawnEnemy()
+		local size = (1 + math.log(score))
 		for i = #enemyTable, 1, -1 do
 			local deleteEnemy = enemyTable[i]
 	
@@ -214,13 +214,15 @@ function scene:show( event )
 			elseif
 				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
 				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y
+				and enemyScore < 1
 			then 
 				display.remove(deleteEnemy) 
 				table.remove(enemyTable, i)
 				score = score + 1
 				updateText()
-				size = 1 + math.log(score)
+				local size = 1 + math.log(score)
 				grow()
+				print("test")
 
 			end
 		end
