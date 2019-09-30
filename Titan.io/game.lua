@@ -225,7 +225,7 @@ function scene:show( event )
 				display.remove(deleteEnemy)
 				table.remove(enemyTable, i) 
 				table.remove(scoreTable, i)
-				score = score + 10
+				score = score + 1
 				size = size + math.log(score)
 				updateText()
 				grow()
