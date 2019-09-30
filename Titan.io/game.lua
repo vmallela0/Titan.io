@@ -219,9 +219,9 @@ function scene:show( event )
 				table.remove(enemyTable, i)
 				table.remove(scoreTable, i)
 			elseif
-				deleteEnemy.x -(45 + (math.log(score) * 5)) <= sandstorm.x and deleteEnemy.x + (45 + (math.log(score) * 5)) >= sandstorm.x and 
-				deleteEnemy.y -(45 + (math.log(score) * 5)) <= sandstorm.y and deleteEnemy.y + (45 + (math.log(score) * 5)) >= sandstorm.y and
-				1 + math.log(enemyS) <= size 
+				deleteEnemy.x -(50 + (math.log(score) * 5)) <= sandstorm.x and deleteEnemy.x + (50 + (math.log(score) * 5)) >= sandstorm.x and 
+				deleteEnemy.y -(50 + (math.log(score) * 5)) <= sandstorm.y and deleteEnemy.y + (50 + (math.log(score) * 5)) >= sandstorm.y and
+				1 + math.log(enemyS) <= size + .2
 			then 
 				display.remove(deleteEnemy)
 				table.remove(enemyTable, i) 
