@@ -221,7 +221,7 @@ function scene:show( event )
 			elseif
 				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
 				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y and
-				1 + math.log(enemyS) <= size + 1
+				1 + math.log(enemyS) <= size 
 			then 
 				display.remove(deleteEnemy)
 				table.remove(enemyTable, i) 
