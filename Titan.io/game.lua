@@ -179,6 +179,7 @@ function scene:create( event )
 	sandstorm.y = display.contentCenterY
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
+	sandstorm:toFront()
 
 
 	-- Sensor type the sandstorm
@@ -226,7 +227,7 @@ function scene:show( event )
 				table.remove(enemyTable, i) 
 				table.remove(scoreTable, i)
 				score = score + 1
-				size = size + math.log(score)
+				size = 1 + math.log(score)
 				updateText()
 				grow()
 				print("actual delete")
