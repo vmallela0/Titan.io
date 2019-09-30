@@ -173,8 +173,8 @@ function scene:create( event )
 
 	-- spawn self
 	sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
-	sandstorm.x = 500 
-	sandstorm.y = 500
+	sandstorm.x = display.contentCenterX 
+	sandstorm.y = display.contentCenterY
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
 
