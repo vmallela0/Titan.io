@@ -82,8 +82,9 @@ local function spawnEnemy()
 		enemyStorm.myName = "enemy"
 		enemyScore = math.random(1, 3)
 		table.insert(scoreTable, enemyScore)
-		enemyStorm.xScale = 1 + math.log(enemyScore)
-		enemyStorm.yScale = 1 + math.log(enemyScore)
+		enemySize = 1 + math.log(enemyScore)
+		enemyStorm.xScale = enemySize
+		enemyStorm.yScale = enemySize
 		-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
 		enemyStorm.x = math.random(0, display.contentWidth)
 		enemyStorm.y = math.random(0, display.contentHeight)
@@ -203,34 +204,33 @@ function scene:show( event )
 
 	local function gameLoop()
 		spawnEnemy()
-		size = 1 + math.log(score)
 		for i = #enemyTable, 1, -1 do
+			local enemyS = scoreTable[i]
 			local deleteEnemy = enemyTable[i]
-			for n = #scoreTable, 1, -1 do
-				local enemyS = scoreTable[n]
-				if
-					deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
-					deleteEnemy.y < -100 or
-					deleteEnemy.y > display.contentHeight + 100
-				then 
-					display.remove(deleteEnemy)
-					table.remove(enemyTable, i)
-					table.remove(scoreTable, n)
-				elseif
-					deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
-					deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y
-					and math.log(enemyS) < (size + 1) and math.log(enemyS) < (size + 1)
-				then 
-					display.remove(deleteEnemy) 
-					table.remove(scoreTable, n)
-					table.remove(enemyTable, i)
-					score = score + 1
-					updateText()
-					size = 1 + math.log(score)
-					grow()
-					print("test")
+			local size = 1
+				
+			if
+				deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
+				deleteEnemy.y < -100 or
+				deleteEnemy.y > display.contentHeight + 100
+			then 
+				display.remove(deleteEnemy)
+				table.remove(enemyTable, i)
+				table.remove(scoreTable, i)
+			elseif
+				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
+				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y and
+				1 + math.log(enemyS) <= 5
+			then 
+				display.remove(deleteEnemy)
+				table.remove(enemyTable, i) 
+				table.remove(scoreTable, i)
+				score = score + 10
+				size = size + math.log(score)
+				updateText()
+				grow()
+				print("actual delete")
 
-				end
 			end
 		end
 	end
