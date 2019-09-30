@@ -203,7 +203,7 @@ function scene:show( event )
 
 	local function gameLoop()
 		spawnEnemy()
-		local size = 1 + math.log(score)
+		size = 1 + math.log(score)
 		for i = #enemyTable, 1, -1 do
 			local deleteEnemy = enemyTable[i]
 			for n = #scoreTable, 1, -1 do
@@ -219,14 +219,14 @@ function scene:show( event )
 				elseif
 					deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
 					deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y
-					and math.log(enemyS) < size and math.log(enemyS) < size
+					and math.log(enemyS) < (size + 1) and math.log(enemyS) < (size + 1)
 				then 
 					display.remove(deleteEnemy) 
 					table.remove(scoreTable, n)
 					table.remove(enemyTable, i)
 					score = score + 1
 					updateText()
-					local size = 1 + math.log(score)
+					size = 1 + math.log(score)
 					grow()
 					print("test")
 
