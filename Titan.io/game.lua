@@ -199,8 +199,8 @@ function scene:show( event )
 	local phase = event.phase
 
 	local function grow()
-		sandstorm.xScale = size
-		sandstorm.yScale = size
+		sandstorm.xScale = size 
+		sandstorm.yScale = size 
 	end
 
 	local function gameLoop()
@@ -226,7 +226,7 @@ function scene:show( event )
 				table.remove(enemyTable, i) 
 				table.remove(scoreTable, i)
 				score = score + 1
-				size = size + math.log(score)
+				size = size + math.log(score / 3)
 				updateText()
 				grow()
 				print("actual delete")
