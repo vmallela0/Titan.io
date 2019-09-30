@@ -47,6 +47,7 @@ local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 --score and player info init
 local score = 0
 local died = false
+local size = 1
 
 local enemyTable = {}
 local scoreTable = {}
@@ -207,7 +208,6 @@ function scene:show( event )
 		for i = #enemyTable, 1, -1 do
 			local enemyS = scoreTable[i]
 			local deleteEnemy = enemyTable[i]
-			local size = 1
 				
 			if
 				deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
