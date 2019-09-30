@@ -79,6 +79,7 @@ local function spawnEnemy()
 	-- we will need to add the enemyCount cap because it is finite and the map needs to be regulated
 
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
+		enemyStorm:toBack()
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
 		enemyScore = math.random(1, 3)
@@ -179,7 +180,6 @@ function scene:create( event )
 	sandstorm.y = display.contentCenterY
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
-	sandstorm:toFront()
 
 
 	-- Sensor type the sandstorm
@@ -219,8 +219,8 @@ function scene:show( event )
 				table.remove(enemyTable, i)
 				table.remove(scoreTable, i)
 			elseif
-				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
-				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y and
+				deleteEnemy.x -(45 + (math.log(score) * 5)) <= sandstorm.x and deleteEnemy.x + (45 + (math.log(score) * 5)) >= sandstorm.x and 
+				deleteEnemy.y -(45 + (math.log(score) * 5)) <= sandstorm.y and deleteEnemy.y + (45 + (math.log(score) * 5)) >= sandstorm.y and
 				1 + math.log(enemyS) <= size 
 			then 
 				display.remove(deleteEnemy)
@@ -230,8 +230,6 @@ function scene:show( event )
 				size = 1 + math.log(score)
 				updateText()
 				grow()
-				print("actual delete")
-
 			end
 		end
 	end
