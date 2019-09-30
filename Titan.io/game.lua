@@ -82,7 +82,7 @@ local function spawnEnemy()
 		enemyStorm:toBack()
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
-		enemyScore = math.random(1, 3)
+		enemyScore = math.random(1, 7)
 		table.insert(scoreTable, enemyScore)
 		enemySize = 1 + math.log(enemyScore)
 		enemyStorm.xScale = enemySize
@@ -221,7 +221,7 @@ function scene:show( event )
 			elseif
 				deleteEnemy.x -(50 + (math.log(score) * 5)) <= sandstorm.x and deleteEnemy.x + (50 + (math.log(score) * 5)) >= sandstorm.x and 
 				deleteEnemy.y -(50 + (math.log(score) * 5)) <= sandstorm.y and deleteEnemy.y + (50 + (math.log(score) * 5)) >= sandstorm.y and
-				1 + math.log(enemyS) <= size + .2
+				1 + math.log(enemyS) <= size + .3
 			then 
 				display.remove(deleteEnemy)
 				table.remove(enemyTable, i) 
