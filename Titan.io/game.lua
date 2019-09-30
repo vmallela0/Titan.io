@@ -80,14 +80,14 @@ local function spawnEnemy()
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
-		enemyScore = math.random(1, 5)
+		enemyScore = math.random(0, 5)
 		enemyStorm.xScale = 1 + math.log(enemyScore)
 		enemyStorm.yScale = 1 + math.log(enemyScore)
 		-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
 		enemyStorm.x = math.random(0, display.contentWidth)
 		enemyStorm.y = math.random(0, display.contentHeight)
 		physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
-		enemyStorm:setLinearVelocity(math.random(200, 200), math.random(-200, 200))
+		enemyStorm:setLinearVelocity(math.random(-200, 200), math.random(-200, 200))
 		enemyStorm:applyTorque(10)
 		-- enemyCount=enemyCount+1
 	-- end
@@ -216,7 +216,7 @@ function scene:show( event )
 			elseif
 				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
 				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y
-				and enemyScore < 1
+				and enemyScore < size
 			then 
 				display.remove(deleteEnemy) 
 				table.remove(enemyTable, i)
