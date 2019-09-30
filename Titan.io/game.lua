@@ -121,8 +121,8 @@ local function dragSelf(event)
 		-- timer.performWithDelay(200, function () 
 
 		--Please don't change this -->>
-		sandstorm.touchOffsetX = event.x - sandstorm.x
-		sandstorm.touchOffsetY = event.y - sandstorm.y
+		sandstorm.x = event.x - sandstorm.touchOffsetX
+		sandstorm.Y = event.y - sandstorm.touchOffsetY
 		-- Force applyer, doesnt work well
 		-- local fx = event.x - sandstorm.x
 		-- local fy = event.y - sandstorm.y
