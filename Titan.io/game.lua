@@ -122,7 +122,7 @@ local function dragSelf(event)
 
 		--Please don't change this -->>
 		sandstorm.x = event.x - sandstorm.touchOffsetX
-		sandstorm.Y = event.y - sandstorm.touchOffsetY
+		sandstorm.y = event.y - sandstorm.touchOffsetY
 		-- Force applyer, doesnt work well
 		-- local fx = event.x - sandstorm.x
 		-- local fy = event.y - sandstorm.y
