@@ -1,4 +1,3 @@
--- require "math"
 
 local composer = require( "composer" )
 
@@ -80,7 +79,7 @@ local function spawnEnemy()
 		local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
 		table.insert(enemyTable, enemyStorm)
 		enemyStorm.myName = "enemy"
-		enemyScore = math.random(0, 5)
+		enemyScore = math.random(0, 3)
 		enemyStorm.xScale = 1 + math.log(enemyScore)
 		enemyStorm.yScale = 1 + math.log(enemyScore)
 		-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
@@ -202,7 +201,7 @@ function scene:show( event )
 
 	local function gameLoop()
 		spawnEnemy()
-		local size = (1 + math.log(score))
+		local size = 1 + math.log(score)
 		for i = #enemyTable, 1, -1 do
 			local deleteEnemy = enemyTable[i]
 	
@@ -216,7 +215,7 @@ function scene:show( event )
 			elseif
 				deleteEnemy.x -(40 + (score * 5)) <= sandstorm.x and deleteEnemy.x + (40 + (score * 5)) >= sandstorm.x and 
 				deleteEnemy.y -(40 + (score * 5)) <= sandstorm.y and deleteEnemy.y + (40 + (score * 5)) >= sandstorm.y
-				and enemyScore < size
+				and sandstorm.xScale < size and sandstorm.yScale < size
 			then 
 				display.remove(deleteEnemy) 
 				table.remove(enemyTable, i)
