@@ -229,8 +229,8 @@ function scene:show( event )
 				table.remove(enemyTable, i)
 				table.remove(scoreTable, i)
 			elseif
-				sandstorm.x <= deleteEnemy.x and sandstorm.x >= deleteEnemy.x and 
-				sandstorm.y <= deleteEnemy.y and sandstorm.y >= deleteEnemy.y and 
+				deleteEnemy.x -(40 * size) <= sandstorm.x and deleteEnemy.x + (40 * size) >= sandstorm.x and 
+				deleteEnemy.y -(40 * size) <= sandstorm.y and deleteEnemy.y + (40 * size) >= sandstorm.y and
 				1 + math.log(enemyS) <= size 
 			then 
 				-- delete enemy
@@ -245,9 +245,9 @@ function scene:show( event )
 				-- print("test")
 			elseif
 				-- touches but size bigger (enemy eat)
-				deleteEnemy.x <= sandstorm.x and deleteEnemy.x >= sandstorm.x and 
-				deleteEnemy.y <= sandstorm.y and deleteEnemy.y >= sandstorm.y and
-				1 + math.log(enemyS) >= size 
+				deleteEnemy.x -(40 * size) <= sandstorm.x and deleteEnemy.x + (40 * size) >= sandstorm.x and 
+				deleteEnemy.y -(40 * size) <= sandstorm.y and deleteEnemy.y + (40 * size) >= sandstorm.y and
+				1 + math.log(enemyS) > size 
 			then 
 				-- turns blank
 				sandstorm.alpha = 0
