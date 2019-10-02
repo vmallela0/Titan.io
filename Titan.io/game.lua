@@ -123,15 +123,18 @@ local function spawnEnemy()
 end
 
 local function spawnRobots()
-	robotType = math.random(0, 2)
+	robotType = math.random(1, 2)
 	if robotType == 1 then
 		robot = display.newImageRect(mainGroup, objectSheet, 5, 69, 66)
-	else 
+	elseif robotType == 2 then
 		robot = display.newImageRect(mainGroup, objectSheet, 6, 67, 65)
 	end
+	table.insert(robotTable, robot)
 	robot:toBack()
 	robot.myName = "robot"
+	roboSize = math.random(1, 3)
 	robotSize = (math.random(1, 3) / 3)
+	table.insert(robotSizeTable, roboSize)
 	robot.xScale = robotSize
 	robot.yScale = robotSize
 	robot.x = math.random(-500, display.contentWidth + 500)
@@ -289,7 +292,7 @@ function scene:show( event )
 				table.remove(enemyTable, i) 
 				table.remove(scoreTable, i)
 				-- updates score and size
-				score = score + enemyS
+				score = score + (enemyS * 2)
 				size = (1 + (math.log(score) / 2))
 				updateText()
 				grow()
@@ -306,6 +309,23 @@ function scene:show( event )
 				timer.performWithDelay(1000, endGame)
 			end
 		end
+		for n = #robotTable, 1, -1 do
+			local deleteRobot = robotTable[n]
+			local robotS = robotSizeTable[n]
+
+			if 
+				deleteRobot.x - 10 <= sandstorm.x and deleteRobot.x + 50 >= sandstorm.x and
+				deleteRobot.y - 10 <= sandstorm.y and deleteRobot.y + 50 >= sandstorm.y
+			then
+				display.remove(deleteRobot)
+				table.remove(robotTable, n)
+				table.remove(robotSizeTable, n)
+				score = score + robotS
+				size = (1 + (math.log(score) / 2))
+				updateText()
+				grow()
+			end
+		end
 	end
 
 
@@ -319,7 +339,7 @@ function scene:show( event )
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
-		robotTimer = timer.performWithDelay(200, spawnRobots, 0)
+		robotTimer = timer.performWithDelay(400, spawnRobots, 0)
 	end
 end
 
