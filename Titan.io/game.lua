@@ -38,6 +38,18 @@ local sheetOptions =
 			width = 70,
 			height = 70
 		},
+		{-- blue robots
+			x = 295,
+			y = 20,
+			width = 69, 
+			height = 66
+		},
+		{-- red robots
+			x = 383,
+			y = 22,
+			width = 67,
+			height = 65
+		}
 	},
 }
 
