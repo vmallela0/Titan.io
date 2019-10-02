@@ -44,6 +44,7 @@ local sheetOptions =
 --sprite initialization
 local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
+
 --score and player info init
 local score = 0
 local died = false
@@ -122,6 +123,7 @@ local function updateText()
 end
 
 -- movement func, for now just draggin
+-- change to joystick controls 
 local function dragSelf(event)
 	local sandstorm = event.target
 	local phase = event.phase
@@ -156,6 +158,8 @@ local function endGame()
 	composer.gotoScene("menu")
 end
 
+
+
 -- -----------------------------------------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------------------------------------
@@ -180,6 +184,9 @@ function scene:create( event )
 	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
+	local joystick = display.newImageRect(uiGroup, "joystick.png", 500, 500)
+	joystick.x = -150
+	joystick.y = 800
 
 	-- score Text 
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
