@@ -65,10 +65,14 @@ local size = 1
 local enemyTable = {}
 local scoreTable = {}
 
+local robotTable = {}
+local robotSizeTable = {}
+
 --game objects
 local rover
 local cargo
 local sandstorm
+local robot
 local gameLoopTimer
 local spawnTimer
 local scoreText
@@ -99,7 +103,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = math.random(1, 15)
+	enemyScore = math.random(1, 10)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -107,8 +111,8 @@ local function spawnEnemy()
 	enemyStorm.xScale = enemySize
 	enemyStorm.yScale = enemySize
 	-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
-	enemyStorm.x = math.random(0, display.contentWidth)
-	enemyStorm.y = math.random(0, display.contentHeight)
+	enemyStorm.x = math.random(0, display.contentWidth + 100)
+	enemyStorm.y = math.random(0, display.contentHeight + 100)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 	-- random path
 	enemyStorm:setLinearVelocity(math.random(-200, 200), math.random(-200, 200))
@@ -118,6 +122,21 @@ local function spawnEnemy()
 	-- end
 end
 
+local function spawnRobots()
+	robotType = math.random(0, 2)
+	if robotType == 1 then
+		robot = display.newImageRect(mainGroup, objectSheet, 5, 69, 66)
+	else 
+		robot = display.newImageRect(mainGroup, objectSheet, 6, 67, 65)
+	end
+	robot:toBack()
+	robot.myName = "robot"
+	robotSize = (math.random(1, 3) / 3)
+	robot.xScale = robotSize
+	robot.yScale = robotSize
+	robot.x = math.random(-500, display.contentWidth + 500)
+	robot.y = math.random(0, display.contentHeight)
+end
 --make sandstorm's radius applicable
 --function sandstorm()
 	--sandstorm.scale(radius)
@@ -287,6 +306,7 @@ function scene:show( event )
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
+		robotTimer = timer.performWithDelay(200, spawnRobots, 0)
 	end
 end
 
@@ -301,6 +321,7 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 		timer.pause(gameLoopTimer)
 		timer.pause(spawnTimer)
+		timer.pause(robotTimer)
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		physics.pause()
