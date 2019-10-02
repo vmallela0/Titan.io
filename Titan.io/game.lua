@@ -230,6 +230,19 @@ function scene:create( event )
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
 
+	local function spawnSelf()
+		sandstorm.isBodyActive = false
+		sandstorm.x = display.contentCenterX
+		sandstorm.y = display.contentCenterY
+
+		-- fade in ship when spawned
+		transition.to(sandstorm, {alpha=1, time=3000,
+			onComplete = function()
+				sandstorm.isBodyActive = true
+				endGame = false
+			end
+		} )	
+	end
 
 	-- Sensor type the sandstorm
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
