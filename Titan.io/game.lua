@@ -214,6 +214,7 @@ function scene:create( event )
 
 	uiGroup = display.newGroup()
 	sceneGroup:insert(uiGroup)
+
 	-- background
 	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
 	background.x = display.contentCenterX
