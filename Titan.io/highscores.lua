@@ -41,15 +41,15 @@ end
 
 
 -- hide()
-function scene:hide( event )
+function scene:hide(event)
 
 	local sceneGroup = self.view
 	local phase = event.phase
 
-	if ( phase == "will" ) then
+	if (phase == "will") then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 
-	elseif ( phase == "did" ) then
+	elseif (phase == "did") then
 		-- Code here runs immediately after the scene goes entirely off screen
 
 	end
@@ -57,7 +57,7 @@ end
 
 
 -- destroy()
-function scene:destroy( event )
+function scene:destroy(event)
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
