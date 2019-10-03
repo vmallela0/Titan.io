@@ -1,4 +1,3 @@
-
 local composer = require( "composer" )
 
 local scene = composer.newScene()
@@ -18,8 +17,9 @@ local sheetOptions =
 {
 	frames = 
 	{
-		{-- rover
-		},
+		-- {-- rover
+		-- },
+		
 		{-- Cargo
 			x = 1,
 			y = 3,
@@ -298,7 +298,7 @@ function scene:show( event )
 				size = (1 + (math.log(score) / 2))
 				updateText()
 				grow()
-				-- print("test")
+		
 			elseif
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 

@@ -8,7 +8,13 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-
+-- background
+local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
+background.x = display.contentCenterX
+background.y = display.contentCenterY
+local joystick = display.newImageRect(uiGroup, "joystick.png", 500, 500)
+joystick.x = -150
+joystick.y = 800
 
 
 -- -----------------------------------------------------------------------------------
