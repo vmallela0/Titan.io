@@ -273,6 +273,7 @@ function scene:show( event )
 		for i = #enemyTable, 1, -1 do
 			local enemyS = scoreTable[i]
 			local deleteEnemy = enemyTable[i]
+			local enemyRealSize = 1 + math.log(enemyS)
 				
 			if 
 				deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
@@ -283,8 +284,8 @@ function scene:show( event )
 				table.remove(enemyTable, i)
 				table.remove(scoreTable, i)
 			elseif
-				deleteEnemy.x -(40 * size) <= sandstorm.x and deleteEnemy.x + (40 * size) >= sandstorm.x and 
-				deleteEnemy.y -(40 * size) <= sandstorm.y and deleteEnemy.y + (40 * size) >= sandstorm.y and
+				sandstorm.x -(30 * size) <= deleteEnemy.x and sandstorm.x + (40 * size) >= deleteEnemy.x and 
+				sandstorm.y -(30 * size) <= deleteEnemy.y and sandstorm.y + (40 * size) >= deleteEnemy.y and
 				1 + math.log(enemyS) <= size 
 			then 
 				-- delete enemy
@@ -299,8 +300,8 @@ function scene:show( event )
 				-- print("test")
 			elseif
 				-- touches but size bigger (enemy eat)
-				deleteEnemy.x -(40 * size) <= sandstorm.x and deleteEnemy.x + (40 * size) >= sandstorm.x and 
-				deleteEnemy.y -(40 * size) <= sandstorm.y and deleteEnemy.y + (40 * size) >= sandstorm.y and
+				deleteEnemy.x -(40 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (40 * enemyRealSize) >= sandstorm.x and 
+				deleteEnemy.y -(40 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (40 * enemyRealSize) >= sandstorm.y and
 				1 + math.log(enemyS) > size 
 			then 
 				-- turns blank
@@ -314,8 +315,8 @@ function scene:show( event )
 			local robotS = robotSizeTable[n]
 
 			if 
-				deleteRobot.x - 10 <= sandstorm.x and deleteRobot.x + 50 >= sandstorm.x and
-				deleteRobot.y - 10 <= sandstorm.y and deleteRobot.y + 50 >= sandstorm.y
+				sandstorm.x - (30 * size) <= deleteRobot.x and sandstorm.x + (30 * size) >= deleteRobot.x and
+				sandstorm.y - (30 * size) <= deleteRobot.y and sandstorm.y + (30 * size) >= deleteRobot.y
 			then
 				display.remove(deleteRobot)
 				table.remove(robotTable, n)
