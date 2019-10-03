@@ -73,6 +73,7 @@ local rover
 local cargo
 local sandstorm
 local robot
+local joystick
 local gameLoopTimer
 local spawnTimer
 local scoreText
@@ -80,6 +81,7 @@ local scoreText
 local backGroup
 local mainGroup
 local uiGroup
+
 
 --local enemyCount = 0
 
@@ -188,8 +190,30 @@ local function dragSelf(event)
 	return true
 end
 
+local function joystickMovement()
+	local joystick = event.target
+	local phase = event.phase
+
+	if("began" == phase) then 
+		display.currentStage:setFocus(joystick)
+	elseif("moved" == phase) then
+		local fx = 5
+		local fy = 5
+		local fm = math.sqrt(fx * fx + fy * fy)
+		if fm > 0 then 
+			fx = fx / fm
+			fy = fy / fm
+		end
+		local forceScale = 1
+		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+	elseif("ended" == phase or "cancelled" == phase) then 
+		display.currentStage:setFocus(nil)
+	end
+	return true
+end
+
 local function endGame()
-	composer.gotoScene("menu")
+	composer.gotoScene("menu",  {effect = "crossFade"})
 end
 
 
