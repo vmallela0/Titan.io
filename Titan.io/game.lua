@@ -341,7 +341,7 @@ function scene:show( event )
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
-		robotTimer = timer.performWithDelay(400, spawnRobots, 0)
+		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
 
