@@ -301,8 +301,8 @@ function scene:show( event )
 				-- print("test")
 			elseif
 				-- touches but size bigger (enemy eat)
-				deleteEnemy.x -(40 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (40 * enemyRealSize) >= sandstorm.x and 
-				deleteEnemy.y -(40 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (40 * enemyRealSize) >= sandstorm.y and
+				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
+				deleteEnemy.y -(35 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y and
 				1 + math.log(enemyS) > size 
 			then 
 				-- turns blank
