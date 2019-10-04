@@ -49,6 +49,12 @@ local sheetOptions =
 			y = 22,
 			width = 67,
 			height = 65
+		},
+		{-- Joystick pad
+			x = 513, 
+			y = 15,
+			width = 125, 
+			height = 
 		}
 	},
 }
@@ -67,8 +73,6 @@ local scoreTable = {}
 
 local robotTable = {}
 local robotSizeTable = {}
-
-local timerTable = {}
 
 --game objects
 local rover
@@ -446,9 +450,7 @@ function scene:show( event )
 		table.insert(timerTable, gameLoopTimer)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
-		table.insert(timerTable, spawnTimer)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
-		table.insert(timerTable, robotTimer)
 	end
 end
 
