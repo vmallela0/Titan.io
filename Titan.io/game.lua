@@ -54,7 +54,7 @@ local sheetOptions =
 			x = 513, 
 			y = 15,
 			width = 125, 
-			height = 
+			height = 125
 		}
 	},
 }
@@ -84,6 +84,7 @@ local joystickTop
 local joystickLeft
 local joystickRight
 local joystickBottom
+local joystickPad
 
 local gameLoopTimer
 local spawnTimer
@@ -324,6 +325,11 @@ function scene:create( event )
 	joystickBottom.x = -75
 	joystickBottom.y = 800
 
+	joystickPad = display.newImageRect(uiGroup, objectSheet, 7, 125, 125)
+	joystickPad.x = -125
+	joystickPad.y = 700
+
+
 	-- score Text 
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
 	scoreText:setFillColor(0, 0, 0)
@@ -447,7 +453,6 @@ function scene:show( event )
 		physics.start()
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
-		table.insert(timerTable, gameLoopTimer)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
