@@ -326,8 +326,10 @@ function scene:create( event )
 	joystickBottom.y = 800
 
 	joystickPad = display.newImageRect(uiGroup, objectSheet, 7, 125, 125)
-	joystickPad.x = -125
-	joystickPad.y = 700
+	joystickPad.xScale = .75
+	joystickPad.yScale = .75
+	joystickPad.x = -207.5
+	joystickPad.y = 580
 
 
 	-- score Text 
