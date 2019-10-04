@@ -68,14 +68,22 @@ local scoreTable = {}
 local robotTable = {}
 local robotSizeTable = {}
 
+local timerTable = {}
+
 --game objects
 local rover
 local cargo
 local sandstorm
 local robot
-local joystick
+
+local joystickTop
+local joystickLeft
+local joystickRight
+local joystickBottom
+
 local gameLoopTimer
 local spawnTimer
+local robotTimer
 local scoreText
 
 local backGroup
@@ -105,7 +113,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = math.random(1, 10)
+	enemyScore = math.random(1, 2)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -117,7 +125,7 @@ local function spawnEnemy()
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 	-- random path
-	enemyStorm:setLinearVelocity(math.random(-200, 200), math.random(-200, 200))
+	enemyStorm:setLinearVelocity(math.random(-50, 50), math.random(-50, 50))
 	-- applies rotation
 	enemyStorm:applyTorque(10)
 		-- enemyCount=enemyCount+1
@@ -190,30 +198,82 @@ local function dragSelf(event)
 	return true
 end
 
-local function joystickMovement()
-	local joystick = event.target
+local function joystickTopMove(event)
+	local joystickTop = event.target
 	local phase = event.phase
 
 	if("began" == phase) then 
-		display.currentStage:setFocus(joystick)
-	elseif("moved" == phase) then
-		local fx = 5
-		local fy = 5
-		local fm = math.sqrt(fx * fx + fy * fy)
-		if fm > 0 then 
-			fx = fx / fm
-			fy = fy / fm
-		end
+		display.currentStage:setFocus(joystickTop)
+		local fx = 0
+		local fy = -8
 		local forceScale = 1
 		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+	-- elseif("moved" == phase) then
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
+		sandstorm:applyForce(0, 8, sandstorm.x, sandstorm.y)
+	end
+	return true
+end
+
+local function joystickLeftMove(event)
+	local joystickLeft = event.target
+	local phase = event.phase
+
+	if("began" == phase) then 
+		display.currentStage:setFocus(joystickLeft)
+		local fx = -8
+		local fy = 0
+		local forceScale = 1
+		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+	-- elseif("moved" == phase) then
+		
+	elseif("ended" == phase or "cancelled" == phase) then 
+		display.currentStage:setFocus(nil)
+		sandstorm:applyForce(8, 0, sandstorm.x, sandstorm.y)
+	end
+	return true
+end
+
+local function joystickRightMove(event)
+	local joystickRight = event.target
+	local phase = event.phase
+
+	if("began" == phase) then 
+		display.currentStage:setFocus(joystickRight)
+		local fx = 8
+		local fy = 0
+		local forceScale = 1
+		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+	-- elseif("moved" == phase) then
+	
+	elseif("ended" == phase or "cancelled" == phase) then 
+		display.currentStage:setFocus(nil)
+		sandstorm:applyForce(-8, 0, sandstorm.x, sandstorm.y)
+	end
+	return true
+end
+
+local function joystickBottomMove(event)
+	local joystickBottom = event.target
+	local phase = event.phase
+
+	if("began" == phase) then 
+		display.currentStage:setFocus(joystickBottom)
+		local fx = 0
+		local fy = 8
+		local forceScale = 1
+		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+	-- elseif("moved" == phase) then
+	elseif("ended" == phase or "cancelled" == phase) then 
+		display.currentStage:setFocus(nil)
+		sandstorm:applyForce(0, -8, sandstorm.x, sandstorm,y)
 	end
 	return true
 end
 
 local function endGame()
-	composer.gotoScene("menu",  {effect = "crossFade"})
+	composer.gotoScene("menu", {time = 1000, effect = "crossFade"})
 end
 
 
@@ -243,9 +303,22 @@ function scene:create( event )
 	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
-	local joystick = display.newImageRect(uiGroup, "joystick.png", 500, 500)
-	joystick.x = -150
-	joystick.y = 800
+
+	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	joystickTop.x = -75
+	joystickTop.y = 600
+
+	joystickLeft = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	joystickLeft.x = -175
+	joystickLeft.y = 700
+
+	joystickRight = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	joystickRight.x = 25
+	joystickRight.y = 700
+
+	joystickBottom = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	joystickBottom.x = -75
+	joystickBottom.y = 800
 
 	-- score Text 
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
@@ -263,13 +336,13 @@ function scene:create( event )
 		sandstorm.x = display.contentCenterX
 		sandstorm.y = display.contentCenterY
 
-		-- fade in ship when spawned
+		-- fade in sandstorm when spawned
 		transition.to(sandstorm, {alpha=1, time=3000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
-				endGame = false
 			end
 		} )	
+	
 	end
 
 	-- Sensor type the sandstorm
@@ -279,6 +352,11 @@ function scene:create( event )
 
 	-- Event listener for dragSelf func
 	sandstorm:addEventListener("touch", dragSelf)
+	joystickTop:addEventListener("touch", joystickTopMove)
+	joystickLeft:addEventListener("touch", joystickLeftMove)
+	joystickRight:addEventListener("touch", joystickRightMove)
+	joystickBottom:addEventListener("touch", joystickBottomMove)
+
 	
 end
 
@@ -357,15 +435,20 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-
+		-- timer.resume(gameLoopTimer)
+		-- timer.resume(spawnTimer)
+		-- timer.resume(robotTimer)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
+		table.insert(timerTable, gameLoopTimer)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
+		table.insert(timerTable, spawnTimer)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
+		table.insert(timerTable, robotTimer)
 	end
 end
 
@@ -378,13 +461,15 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		timer.pause(gameLoopTimer)
-		timer.pause(spawnTimer)
-		timer.pause(robotTimer)
+		timer.cancel(gameLoopTimer)
+		timer.cancel(spawnTimer)
+		timer.cancel(robotTimer)
+
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		physics.pause()
 		composer.removeScene("game")
+
 	end
 end
 
@@ -394,7 +479,7 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-
+	
 end
 
 -- -----------------------------------------------------------------------------------
