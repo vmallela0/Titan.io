@@ -277,6 +277,41 @@ local function joystickBottomMove(event)
 	return true
 end
 
+local function stopPad()
+	if joystickPad.x >= -125 then
+		joystickPad.x = -125
+	end
+	if joystickPad.x <= -300 then
+		joystickPad.x = -300
+	end
+	if joystickPad.y <= 475 then 
+		joystickPad.y = 475
+	end
+	if joystickPad.y >= 675 then
+		joystickPad.y = 675
+	end
+end
+
+local function joystickPadMove(event)
+	local joystickPad = event.target
+	local phase = event.phase
+
+	if("began" == phase) then
+		display.currentStage:setFocus(joystickPad)
+		joystickOffsetX = event.x - joystickPad.x
+		joystickOffsetY = event.y - joystickPad.y
+	elseif ("moved" == phase) then
+		joystickPad.x = event.x - joystickOffsetX
+		joystickPad.y = event.y - joystickOffsetY
+		stopPad()
+	elseif("ended" == phase or "cancelled" == phase) then
+		display.currentStage:setFocus(nil)
+		joystickPad.x = -207.5
+		joystickPad.y = 580
+	end
+	return true
+end
+
 local function endGame()
 	composer.gotoScene("menu", {time = 1000, effect = "crossFade"})
 end
@@ -369,6 +404,7 @@ function scene:create( event )
 	joystickRight:addEventListener("touch", joystickRightMove)
 	joystickBottom:addEventListener("touch", joystickBottomMove)
 
+	joystickPad:addEventListener("touch", joystickPadMove)
 	
 end
 
