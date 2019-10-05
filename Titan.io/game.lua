@@ -120,7 +120,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = math.random(1, 20)
+	enemyScore = math.random(1, 5)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -211,14 +211,14 @@ end
 
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
-		fx = 300
+		fx = 100
 	elseif joystickPad.x + 62.5 < -200 then
-		fx = -300
+		fx = -100
 	end
 	if joystickPad.y + 62.5 <= 575 then
-		fy = -300
+		fy = -100
 	elseif joystickPad.y + 62.5 >= 700 then
-		fy = 300
+		fy = 100
 	end
 	if joystickPad.x == -207.5 and joystickPad.y == 580 then
 		fx = 0
