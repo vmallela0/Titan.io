@@ -18,8 +18,6 @@ local sheetOptions =
 {
 	frames = 
 	{
-		{-- rover
-		},
 		{-- Cargo
 			x = 1,
 			y = 3,
@@ -86,6 +84,10 @@ local joystickRight
 local joystickBottom
 local joystickPad
 
+local fx = 0
+local fy = 0
+ 
+
 local gameLoopTimer
 local spawnTimer
 local robotTimer
@@ -110,7 +112,7 @@ local function spawnEnemy()
 	-- do
 	-- we will need to add the enemyCount cap because it is finite and the map needs to be regulated
 		-- display spawn
-	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
+	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
 	-- moves to back
 	enemyStorm:toBack()
 	-- enemy table for deletion
@@ -118,7 +120,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = math.random(1, 2)
+	enemyScore = math.random(1, 20)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -140,9 +142,9 @@ end
 local function spawnRobots()
 	robotType = math.random(1, 2)
 	if robotType == 1 then
-		robot = display.newImageRect(mainGroup, objectSheet, 5, 69, 66)
+		robot = display.newImageRect(mainGroup, objectSheet, 4, 69, 66)
 	elseif robotType == 2 then
-		robot = display.newImageRect(mainGroup, objectSheet, 6, 67, 65)
+		robot = display.newImageRect(mainGroup, objectSheet, 5, 67, 65)
 	end
 	table.insert(robotTable, robot)
 	robot:toBack()
@@ -155,6 +157,10 @@ local function spawnRobots()
 	robot.x = math.random(-500, display.contentWidth + 500)
 	robot.y = math.random(0, display.contentHeight)
 end
+
+local function spawnJoystick()
+	
+end
 --make sandstorm's radius applicable
 --function sandstorm()
 	--sandstorm.scale(radius)
@@ -162,7 +168,7 @@ end
 --end
 
 --following is spawn cargo, idk when to use it:
--- local cargo = display.newImageRect(mainGroup, objectSheet, 2, 87, 87)
+-- local cargo = display.newImageRect(mainGroup, objectSheet, 1, 87, 87)
 -- cargo.x = 500
 -- cargo.y = 500
 
@@ -195,87 +201,46 @@ local function dragSelf(event)
 		-- 	fx = fx / fm
 		-- 	fy = fy / fm
 		-- end
-		-- local forceScale = .1
-		-- sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+		-- loc = .1
+		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
 	end
 	return true
 end
 
-local function joystickTopMove(event)
-	local joystickTop = event.target
-	local phase = event.phase
-
-	if("began" == phase) then 
-		display.currentStage:setFocus(joystickTop)
-		local fx = 0
-		local fy = -8
-		local forceScale = 1
-		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
-	-- elseif("moved" == phase) then
-	elseif("ended" == phase or "cancelled" == phase) then 
-		display.currentStage:setFocus(nil)
-		sandstorm:applyForce(0, 8, sandstorm.x, sandstorm.y)
+local function joystickPadForce()
+	if joystickPad.x + 62.5 >= -100 then
+		fx = 300
+	elseif joystickPad.x + 62.5 < -200 then
+		fx = -300
 	end
-	return true
+	if joystickPad.y + 62.5 <= 575 then
+		fy = -300
+	elseif joystickPad.y + 62.5 >= 700 then
+		fy = 300
+	end
+	if joystickPad.x == -207.5 and joystickPad.y == 580 then
+		fx = 0
+		fy = 0
+	end
 end
 
-local function joystickLeftMove(event)
-	local joystickLeft = event.target
-	local phase = event.phase
-
-	if("began" == phase) then 
-		display.currentStage:setFocus(joystickLeft)
-		local fx = -8
-		local fy = 0
-		local forceScale = 1
-		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
-	-- elseif("moved" == phase) then
-		
-	elseif("ended" == phase or "cancelled" == phase) then 
-		display.currentStage:setFocus(nil)
-		sandstorm:applyForce(8, 0, sandstorm.x, sandstorm.y)
+local function stopSelf()
+	if sandstorm.x >= display.contentWidth + 400 then
+		sandstorm.x = display.contentWidth + 400
 	end
-	return true
+	if sandstorm.x <= -300 then
+		sandstorm.x = -300
+	end
+	if sandstorm.y <= 0 then
+		sandstorm.y = 0
+	end
+	if sandstorm.y >= 900 then
+		sandstorm.y = 900
+	end
 end
 
-local function joystickRightMove(event)
-	local joystickRight = event.target
-	local phase = event.phase
-
-	if("began" == phase) then 
-		display.currentStage:setFocus(joystickRight)
-		local fx = 8
-		local fy = 0
-		local forceScale = 1
-		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
-	-- elseif("moved" == phase) then
-	
-	elseif("ended" == phase or "cancelled" == phase) then 
-		display.currentStage:setFocus(nil)
-		sandstorm:applyForce(-8, 0, sandstorm.x, sandstorm.y)
-	end
-	return true
-end
-
-local function joystickBottomMove(event)
-	local joystickBottom = event.target
-	local phase = event.phase
-
-	if("began" == phase) then 
-		display.currentStage:setFocus(joystickBottom)
-		local fx = 0
-		local fy = 8
-		local forceScale = 1
-		sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
-	-- elseif("moved" == phase) then
-	elseif("ended" == phase or "cancelled" == phase) then 
-		display.currentStage:setFocus(nil)
-		sandstorm:applyForce(0, -8, sandstorm.x, sandstorm,y)
-	end
-	return true
-end
 
 local function stopPad()
 	if joystickPad.x >= -125 then
@@ -292,6 +257,7 @@ local function stopPad()
 	end
 end
 
+
 local function joystickPadMove(event)
 	local joystickPad = event.target
 	local phase = event.phase
@@ -304,10 +270,17 @@ local function joystickPadMove(event)
 		joystickPad.x = event.x - joystickOffsetX
 		joystickPad.y = event.y - joystickOffsetY
 		stopPad()
+		joystickPadForce()
+		sandstorm:setLinearVelocity(fx, fy, sandstorm.x, sandstorm.y)
+		stopSelf()
 	elseif("ended" == phase or "cancelled" == phase) then
 		display.currentStage:setFocus(nil)
 		joystickPad.x = -207.5
 		joystickPad.y = 580
+		fx = 0 
+		fy = 0
+		sandstorm:setLinearVelocity(0, 0, sandstorm.x, sandstorm.y)
+
 	end
 	return true
 end
@@ -344,35 +317,40 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
+	-- spawns joysticks
 	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickTop, {bounce = 0, isSensor = true} )
 	joystickTop.x = -75
 	joystickTop.y = 600
 
 	joystickLeft = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickLeft, {bounce = 0, isSensor = true} )
 	joystickLeft.x = -175
 	joystickLeft.y = 700
 
 	joystickRight = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickRight, {bounce = 0, isSensor = true} )
 	joystickRight.x = 25
 	joystickRight.y = 700
 
 	joystickBottom = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickBottom, {bounce = 0, isSensor = true} )
 	joystickBottom.x = -75
 	joystickBottom.y = 800
 
-	joystickPad = display.newImageRect(uiGroup, objectSheet, 7, 125, 125)
+	joystickPad = display.newImageRect(uiGroup, objectSheet, 6, 125, 125)
+	physics.addBody( joystickPad, { bounce = 0, isSensor = true } )
 	joystickPad.xScale = .75
 	joystickPad.yScale = .75
 	joystickPad.x = -207.5
 	joystickPad.y = 580
-
 
 	-- score Text 
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
 	scoreText:setFillColor(0, 0, 0)
 
 	-- spawn self
-	sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
+	sandstorm = display.newImageRect(mainGroup, objectSheet, 2, 70, 70)
 	sandstorm.x = display.contentCenterX 
 	sandstorm.y = display.contentCenterY
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
@@ -399,12 +377,13 @@ function scene:create( event )
 
 	-- Event listener for dragSelf func
 	sandstorm:addEventListener("touch", dragSelf)
-	joystickTop:addEventListener("touch", joystickTopMove)
-	joystickLeft:addEventListener("touch", joystickLeftMove)
-	joystickRight:addEventListener("touch", joystickRightMove)
-	joystickBottom:addEventListener("touch", joystickBottomMove)
+	-- Runtime:addEventListener("collision", joystickTopMove)
+	-- Runtime:addEventListener("collision", joystickLeftMove)
+	-- Runtime:addEventListener("collision", joystickRightMove)
+	-- Runtime:addEventListener("collision", joystickBottomMove)
 
 	joystickPad:addEventListener("touch", joystickPadMove)
+	-- joystickPad:addEventListener("collision", joystickCollision)
 	
 end
 
@@ -427,7 +406,7 @@ function scene:show( event )
 			local enemyRealSize = 1 + math.log(enemyS)
 				
 			if 
-				deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
+				deleteEnemy.x < -500 or deleteEnemy.x > display.contentWidth + 500 or
 				deleteEnemy.y < -100 or
 				deleteEnemy.y > display.contentHeight + 100
 			then 
