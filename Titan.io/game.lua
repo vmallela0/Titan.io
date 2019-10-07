@@ -340,10 +340,9 @@ function scene:create( event )
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
 
-
 	-- Event listener for joystick func
 	joystickPad:addEventListener("touch", joystickPadMove)
-
+	
 end
 
 
