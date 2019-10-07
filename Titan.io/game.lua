@@ -17,9 +17,6 @@ local sheetOptions =
 {
 	frames = 
 	{
-		-- {-- rover
-		-- },
-		
 		{-- Cargo
 			x = 1,
 			y = 3,
@@ -49,6 +46,12 @@ local sheetOptions =
 			y = 22,
 			width = 67,
 			height = 65
+		},
+		{-- Joystick pad
+			x = 513, 
+			y = 15,
+			width = 125, 
+			height = 125
 		}
 	},
 }
@@ -73,13 +76,26 @@ local rover
 local cargo
 local sandstorm
 local robot
+
+local joystickTop
+local joystickLeft
+local joystickRight
+local joystickBottom
+local joystickPad
+
+local fx = 0
+local fy = 0
+ 
+
 local gameLoopTimer
 local spawnTimer
+local robotTimer
 local scoreText
 
 local backGroup
 local mainGroup
 local uiGroup
+
 
 --local enemyCount = 0
 
@@ -95,7 +111,7 @@ local function spawnEnemy()
 	-- do
 	-- we will need to add the enemyCount cap because it is finite and the map needs to be regulated
 		-- display spawn
-	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 4, 70, 70)
+	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
 	-- moves to back
 	enemyStorm:toBack()
 	-- enemy table for deletion
@@ -115,7 +131,7 @@ local function spawnEnemy()
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 	-- random path
-	enemyStorm:setLinearVelocity(math.random(-200, 200), math.random(-200, 200))
+	enemyStorm:setLinearVelocity(math.random(-50, 50), math.random(-50, 50))
 	-- applies rotation
 	enemyStorm:applyTorque(10)
 		-- enemyCount=enemyCount+1
@@ -125,9 +141,9 @@ end
 local function spawnRobots()
 	robotType = math.random(1, 2)
 	if robotType == 1 then
-		robot = display.newImageRect(mainGroup, objectSheet, 5, 69, 66)
+		robot = display.newImageRect(mainGroup, objectSheet, 4, 69, 66)
 	elseif robotType == 2 then
-		robot = display.newImageRect(mainGroup, objectSheet, 6, 67, 65)
+		robot = display.newImageRect(mainGroup, objectSheet, 5, 67, 65)
 	end
 	table.insert(robotTable, robot)
 	robot:toBack()
@@ -140,6 +156,10 @@ local function spawnRobots()
 	robot.x = math.random(-500, display.contentWidth + 500)
 	robot.y = math.random(0, display.contentHeight)
 end
+
+local function spawnJoystick()
+	
+end
 --make sandstorm's radius applicable
 --function sandstorm()
 	--sandstorm.scale(radius)
@@ -147,7 +167,7 @@ end
 --end
 
 --following is spawn cargo, idk when to use it:
--- local cargo = display.newImageRect(mainGroup, objectSheet, 2, 87, 87)
+-- local cargo = display.newImageRect(mainGroup, objectSheet, 1, 87, 87)
 -- cargo.x = 500
 -- cargo.y = 500
 
@@ -180,16 +200,92 @@ local function dragSelf(event)
 		-- 	fx = fx / fm
 		-- 	fy = fy / fm
 		-- end
-		-- local forceScale = .1
-		-- sandstorm:applyForce(fx * forceScale, fy * forceScale, sandstorm.x, sandstorm.y)
+		-- loc = .1
+		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
 	end
 	return true
 end
 
+local function joystickPadForce()
+	if joystickPad.x + 62.5 >= -100 then
+		fx = 100
+	elseif joystickPad.x + 62.5 < -200 then
+		fx = -100
+	end
+	if joystickPad.y + 62.5 <= 575 then
+		fy = -100
+	elseif joystickPad.y + 62.5 >= 700 then
+		fy = 100
+	end
+	if joystickPad.x == -207.5 and joystickPad.y == 580 then
+		fx = 0
+		fy = 0
+	end
+end
+
+local function stopSelf()
+	if sandstorm.x >= display.contentWidth + 400 then
+		sandstorm.x = display.contentWidth + 400
+	end
+	if sandstorm.x <= -300 then
+		sandstorm.x = -300
+	end
+	if sandstorm.y <= 0 then
+		sandstorm.y = 0
+	end
+	if sandstorm.y >= 900 then
+		sandstorm.y = 900
+	end
+end
+
+
+local function stopPad()
+	if joystickPad.x >= -125 then
+		joystickPad.x = -125
+	end
+	if joystickPad.x <= -300 then
+		joystickPad.x = -300
+	end
+	if joystickPad.y <= 475 then 
+		joystickPad.y = 475
+	end
+	if joystickPad.y >= 675 then
+		joystickPad.y = 675
+	end
+end
+
+
+local function joystickPadMove(event)
+	local joystickPad = event.target
+	local phase = event.phase
+
+	if("began" == phase) then
+		display.currentStage:setFocus(joystickPad)
+		joystickOffsetX = event.x - joystickPad.x
+		joystickOffsetY = event.y - joystickPad.y
+	elseif ("moved" == phase) then
+		joystickPad.x = event.x - joystickOffsetX
+		joystickPad.y = event.y - joystickOffsetY
+		stopPad()
+		joystickPadForce()
+		sandstorm:setLinearVelocity(fx, fy, sandstorm.x, sandstorm.y)
+		stopSelf()
+	elseif("ended" == phase or "cancelled" == phase) then
+		display.currentStage:setFocus(nil)
+		joystickPad.x = -207.5
+		joystickPad.y = 580
+		fx = 0 
+		fy = 0
+		sandstorm:setLinearVelocity(0, 0, sandstorm.x, sandstorm.y)
+
+	end
+	return true
+end
+
 local function endGame()
-	composer.gotoScene("menu")
+	composer.gotoScene("menu", {time = 1000, effect = "crossFade"})
 end
 
 
@@ -219,16 +315,41 @@ function scene:create( event )
 	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
-	local joystick = display.newImageRect(uiGroup, "joystick.png", 500, 500)
-	joystick.x = -150
-	joystick.y = 800
+
+	-- spawns joysticks
+	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickTop, {bounce = 0, isSensor = true} )
+	joystickTop.x = -75
+	joystickTop.y = 600
+
+	joystickLeft = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickLeft, {bounce = 0, isSensor = true} )
+	joystickLeft.x = -175
+	joystickLeft.y = 700
+
+	joystickRight = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickRight, {bounce = 0, isSensor = true} )
+	joystickRight.x = 25
+	joystickRight.y = 700
+
+	joystickBottom = display.newImageRect(uiGroup, "joystick.png", 400, 400)
+	physics.addBody( joystickBottom, {bounce = 0, isSensor = true} )
+	joystickBottom.x = -75
+	joystickBottom.y = 800
+
+	joystickPad = display.newImageRect(uiGroup, objectSheet, 6, 125, 125)
+	physics.addBody( joystickPad, { bounce = 0, isSensor = true } )
+	joystickPad.xScale = .75
+	joystickPad.yScale = .75
+	joystickPad.x = -207.5
+	joystickPad.y = 580
 
 	-- score Text 
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
 	scoreText:setFillColor(0, 0, 0)
 
 	-- spawn self
-	sandstorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
+	sandstorm = display.newImageRect(mainGroup, objectSheet, 2, 70, 70)
 	sandstorm.x = display.contentCenterX 
 	sandstorm.y = display.contentCenterY
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
@@ -239,13 +360,13 @@ function scene:create( event )
 		sandstorm.x = display.contentCenterX
 		sandstorm.y = display.contentCenterY
 
-		-- fade in ship when spawned
+		-- fade in sandstorm when spawned
 		transition.to(sandstorm, {alpha=1, time=3000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
-				endGame = false
 			end
 		} )	
+	
 	end
 
 	-- Sensor type the sandstorm
@@ -255,6 +376,13 @@ function scene:create( event )
 
 	-- Event listener for dragSelf func
 	sandstorm:addEventListener("touch", dragSelf)
+	-- Runtime:addEventListener("collision", joystickTopMove)
+	-- Runtime:addEventListener("collision", joystickLeftMove)
+	-- Runtime:addEventListener("collision", joystickRightMove)
+	-- Runtime:addEventListener("collision", joystickBottomMove)
+
+	joystickPad:addEventListener("touch", joystickPadMove)
+	-- joystickPad:addEventListener("collision", joystickCollision)
 	
 end
 
@@ -277,7 +405,7 @@ function scene:show( event )
 			local enemyRealSize = 1 + math.log(enemyS)
 				
 			if 
-				deleteEnemy.x < -100 or deleteEnemy.x > display.contentWidth + 100 or
+				deleteEnemy.x < -500 or deleteEnemy.x > display.contentWidth + 500 or
 				deleteEnemy.y < -100 or
 				deleteEnemy.y > display.contentHeight + 100
 			then 
@@ -333,7 +461,9 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-
+		-- timer.resume(gameLoopTimer)
+		-- timer.resume(spawnTimer)
+		-- timer.resume(robotTimer)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
@@ -354,13 +484,15 @@ function scene:hide( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is on screen (but is about to go off screen)
-		timer.pause(gameLoopTimer)
-		timer.pause(spawnTimer)
-		timer.pause(robotTimer)
+		timer.cancel(gameLoopTimer)
+		timer.cancel(spawnTimer)
+		timer.cancel(robotTimer)
+
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
 		physics.pause()
 		composer.removeScene("game")
+
 	end
 end
 
@@ -370,7 +502,7 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
-
+	
 end
 
 -- -----------------------------------------------------------------------------------
