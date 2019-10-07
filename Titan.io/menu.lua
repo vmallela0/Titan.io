@@ -13,7 +13,7 @@ local function gotoGame()
 end
 
 local function gotoHighScores()
-	composer.gotoScene("highscores", {time = 800, effect = "crossFade"})
+	composer.gotoScene("highscores", {time = 500, effect = "crossFade"})
 end
 
 -- local music variable *****

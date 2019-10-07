@@ -9,12 +9,8 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 -- background
-local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
-background.x = display.contentCenterX
-background.y = display.contentCenterY
-local joystick = display.newImageRect(uiGroup, "joystick.png", 500, 500)
-joystick.x = -150
-joystick.y = 800
+
+
 
 
 -- -----------------------------------------------------------------------------------
@@ -26,7 +22,9 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-
+	local background = display.newImageRect(sceneGroup, "gamebackground.png", 1400, 800)
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
 end
 
 
