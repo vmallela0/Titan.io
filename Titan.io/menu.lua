@@ -13,7 +13,7 @@ local function gotoGame()
 end
 
 local function gotoHighScores()
-	composer.gotoScene("highscores", {time = 800, effect = "crossFade"})
+	composer.gotoScene("highscores", {time = 500, effect = "crossFade"})
 end
 
 -- local music variable *****
@@ -37,7 +37,7 @@ function scene:create( event )
 
 	local highscoresButton = display.newText(sceneGroup, "High Scores", display.contentCenterX, 645, native.systemFont, 80)
 	highscoresButton:setFillColor(0, 0, 0)
-	highscoresButton.x = 300
+	highscoresButton.x = 360
 
 	playButton:addEventListener("tap", gotoGame)
 	highscoresButton:addEventListener("tap", gotoHighScores)

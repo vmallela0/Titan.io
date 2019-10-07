@@ -176,6 +176,38 @@ local function updateText()
 	scoreText.text = "Score: ".. score
 end
 
+
+-- movement func, for now just draggin
+-- local function dragSelf(event)
+-- -- 	local sandstorm = event.target
+-- -- 	local phase = event.phase
+
+-- -- 	if("began" == phase) then 
+-- -- 		display.currentStage:setFocus(sandstorm)
+-- -- 		sandstorm.touchOffsetX = event.x - sandstorm.x
+-- -- 		sandstorm.touchOffsetY = event.y - sandstorm.y
+-- -- 	elseif("moved" == phase) then
+-- 		-- timer.performWithDelay(200, function () 
+
+-- 		--Please don't change this -->>
+-- 		sandstorm.x = event.x - sandstorm.touchOffsetX
+-- 		sandstorm.y = event.y - sandstorm.touchOffsetY
+-- 		-- Force applyer, doesnt work well
+-- 		-- local fx = event.x - sandstorm.x
+-- 		-- local fy = event.y - sandstorm.y
+-- 		-- local fm = math.sqrt(fx * fx + fy * fy)
+-- 		-- if fm > 0 then 
+-- 		-- 	fx = fx / fm
+-- 		-- 	fy = fy / fm
+-- 		-- end
+-- 		-- loc = .1
+-- 		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
+-- 	elseif("ended" == phase or "cancelled" == phase) then 
+-- 		display.currentStage:setFocus(nil)
+-- 	end
+-- 	return true
+-- end
+
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
 		fx = 100
@@ -343,8 +375,13 @@ function scene:create( event )
 
 	-- Event listener for dragSelf func
 	sandstorm:addEventListener("touch", dragSelf)
-	joystickPad:addEventListener("touch", joystickPadMove)
-	
+
+	-- sandstorm:addEventListener("touch", dragSelf)
+	-- Runtime:addEventListener("collision", joystickTopMove)
+	-- Runtime:addEventListener("collision", joystickLeftMove)
+	-- Runtime:addEventListener("collision", joystickRightMove)
+	-- Runtime:addEventListener("collision", joystickBottomMove)
+
 end
 
 
@@ -387,9 +424,10 @@ function scene:show( event )
 				table.remove(scoreTable, i)
 				-- updates score and size
 				score = score + (enemyS * 2)
-				size = (1 + (math.log(score) / 2))
+				size = (size + (math.log(enemySize) / 5))
 				updateText()
 				grow()
+
 			elseif
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
