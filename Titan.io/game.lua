@@ -176,25 +176,6 @@ local function updateText()
 	scoreText.text = "Score: ".. score
 end
 
--- movement func, for now just draggin
--- change to joystick controls 
-local function dragSelf(event)
-	local sandstorm = event.target
-	local phase = event.phase
-
-	if("began" == phase) then 
-		display.currentStage:setFocus(sandstorm)
-		sandstorm.touchOffsetX = event.x - sandstorm.x
-		sandstorm.touchOffsetY = event.y - sandstorm.y
-	elseif("moved" == phase) then
-		sandstorm.x = event.x - sandstorm.touchOffsetX
-		sandstorm.y = event.y - sandstorm.touchOffsetY
-	elseif("ended" == phase or "cancelled" == phase) then 
-		display.currentStage:setFocus(nil)
-	end
-	return true
-end
-
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
 		fx = 100
@@ -353,7 +334,6 @@ function scene:create( event )
 				sandstorm.isBodyActive = true
 			end
 		} )	
-	
 	end
 
 	-- Sensor type the sandstorm
@@ -363,13 +343,7 @@ function scene:create( event )
 
 	-- Event listener for dragSelf func
 	sandstorm:addEventListener("touch", dragSelf)
-	-- Runtime:addEventListener("collision", joystickTopMove)
-	-- Runtime:addEventListener("collision", joystickLeftMove)
-	-- Runtime:addEventListener("collision", joystickRightMove)
-	-- Runtime:addEventListener("collision", joystickBottomMove)
-
 	joystickPad:addEventListener("touch", joystickPadMove)
-	-- joystickPad:addEventListener("collision", joystickCollision)
 	
 end
 
@@ -384,6 +358,9 @@ function scene:show( event )
 		sandstorm.xScale = size 
 		sandstorm.yScale = size 
 	end
+
+	local map = native.newMapView(0, 0, display.contentWidth, display.contetnHeight)
+
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		for i = #enemyTable, 1, -1 do
@@ -413,7 +390,6 @@ function scene:show( event )
 				size = (1 + (math.log(score) / 2))
 				updateText()
 				grow()
-		
 			elseif
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
