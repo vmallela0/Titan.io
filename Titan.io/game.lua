@@ -186,26 +186,26 @@ end
 -- 		sandstorm.touchOffsetX = event.x - sandstorm.x
 -- 		sandstorm.touchOffsetY = event.y - sandstorm.y
 -- 	elseif("moved" == phase) then
-		-- timer.performWithDelay(200, function () 
+-- 		-- timer.performWithDelay(200, function () 
 
-		--Please don't change this -->>
-		sandstorm.x = event.x - sandstorm.touchOffsetX
-		sandstorm.y = event.y - sandstorm.touchOffsetY
-		-- Force applyer, doesnt work well
-		-- local fx = event.x - sandstorm.x
-		-- local fy = event.y - sandstorm.y
-		-- local fm = math.sqrt(fx * fx + fy * fy)
-		-- if fm > 0 then 
-		-- 	fx = fx / fm
-		-- 	fy = fy / fm
-		-- end
-		-- loc = .1
-		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
-	elseif("ended" == phase or "cancelled" == phase) then 
-		display.currentStage:setFocus(nil)
-	end
-	return true
-end
+-- 		--Please don't change this -->>
+-- 		sandstorm.x = event.x - sandstorm.touchOffsetX
+-- 		sandstorm.y = event.y - sandstorm.touchOffsetY
+-- 		-- Force applyer, doesnt work well
+-- 		-- local fx = event.x - sandstorm.x
+-- 		-- local fy = event.y - sandstorm.y
+-- 		-- local fm = math.sqrt(fx * fx + fy * fy)
+-- 		-- if fm > 0 then 
+-- 		-- 	fx = fx / fm
+-- 		-- 	fy = fy / fm
+-- 		-- end
+-- 		-- loc = .1
+-- 		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
+-- 	elseif("ended" == phase or "cancelled" == phase) then 
+-- 		display.currentStage:setFocus(nil)
+-- 	end
+-- 	return true
+-- end
 
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
@@ -351,6 +351,7 @@ function scene:create( event )
 	sandstorm = display.newImageRect(mainGroup, objectSheet, 2, 70, 70)
 	sandstorm.x = display.contentCenterX 
 	sandstorm.y = display.contentCenterY
+	sandstorm.alpha = 0
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
 
@@ -360,13 +361,14 @@ function scene:create( event )
 		sandstorm.y = display.contentCenterY
 
 		-- fade in sandstorm when spawned
-		transition.to(sandstorm, {alpha=1, time=3000,
+		transition.to(sandstorm, {alpha=1, time=1000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
 			end
 		} )	
 	
 	end
+	spawnSelf()
 
 	-- Sensor type the sandstorm
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
@@ -374,14 +376,10 @@ function scene:create( event )
 
 
 	-- Event listener for dragSelf func
-	sandstorm:addEventListener("touch", dragSelf)
-	-- Runtime:addEventListener("collision", joystickTopMove)
-	-- Runtime:addEventListener("collision", joystickLeftMove)
-	-- Runtime:addEventListener("collision", joystickRightMove)
-	-- Runtime:addEventListener("collision", joystickBottomMove)
+	-- sandstorm:addEventListener("touch", dragSelf)
+
 
 	joystickPad:addEventListener("touch", joystickPadMove)
-	-- joystickPad:addEventListener("collision", joystickCollision)
 	
 end
 
