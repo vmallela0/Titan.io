@@ -1,4 +1,3 @@
-
 local composer = require( "composer" )
 
 local scene = composer.newScene()
@@ -132,7 +131,7 @@ local function spawnEnemy()
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 	-- random path
-	enemyStorm:setLinearVelocity(math.random(-50, 50), math.random(-50, 50))
+	enemyStorm:setLinearVelocity(math.random(-30, 30), math.random(-30, 30))
 	-- applies rotation
 	enemyStorm:applyTorque(10)
 		-- enemyCount=enemyCount+1
@@ -188,21 +187,8 @@ local function dragSelf(event)
 		sandstorm.touchOffsetX = event.x - sandstorm.x
 		sandstorm.touchOffsetY = event.y - sandstorm.y
 	elseif("moved" == phase) then
-		-- timer.performWithDelay(200, function () 
-
-		--Please don't change this -->>
 		sandstorm.x = event.x - sandstorm.touchOffsetX
 		sandstorm.y = event.y - sandstorm.touchOffsetY
-		-- Force applyer, doesnt work well
-		-- local fx = event.x - sandstorm.x
-		-- local fy = event.y - sandstorm.y
-		-- local fm = math.sqrt(fx * fx + fy * fy)
-		-- if fm > 0 then 
-		-- 	fx = fx / fm
-		-- 	fy = fy / fm
-		-- end
-		-- loc = .1
-		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
 	elseif("ended" == phase or "cancelled" == phase) then 
 		display.currentStage:setFocus(nil)
 	end
@@ -427,7 +413,7 @@ function scene:show( event )
 				size = (1 + (math.log(score) / 2))
 				updateText()
 				grow()
-				-- print("test")
+		
 			elseif
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
@@ -462,16 +448,13 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-		-- timer.resume(gameLoopTimer)
-		-- timer.resume(spawnTimer)
-		-- timer.resume(robotTimer)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
-		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
+		spawnTimer = timer.performWithDelay(1000, spawnEnemy, 0)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
