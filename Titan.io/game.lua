@@ -131,7 +131,7 @@ local function spawnEnemy()
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 	-- random path
-	enemyStorm:setLinearVelocity(math.random(-50, 50), math.random(-50, 50))
+	enemyStorm:setLinearVelocity(math.random(-30, 30), math.random(-30, 30))
 	-- applies rotation
 	enemyStorm:applyTorque(10)
 		-- enemyCount=enemyCount+1
@@ -175,6 +175,7 @@ end
 local function updateText()
 	scoreText.text = "Score: ".. score
 end
+
 
 -- movement func, for now just draggin
 -- local function dragSelf(event)
@@ -365,7 +366,6 @@ function scene:create( event )
 				sandstorm.isBodyActive = true
 			end
 		} )	
-	
 	end
 
 	-- Sensor type the sandstorm
@@ -374,15 +374,14 @@ function scene:create( event )
 
 
 	-- Event listener for dragSelf func
+	sandstorm:addEventListener("touch", dragSelf)
+
 	-- sandstorm:addEventListener("touch", dragSelf)
 	-- Runtime:addEventListener("collision", joystickTopMove)
 	-- Runtime:addEventListener("collision", joystickLeftMove)
 	-- Runtime:addEventListener("collision", joystickRightMove)
 	-- Runtime:addEventListener("collision", joystickBottomMove)
 
-	joystickPad:addEventListener("touch", joystickPadMove)
-	-- joystickPad:addEventListener("collision", joystickCollision)
-	
 end
 
 
@@ -396,6 +395,9 @@ function scene:show( event )
 		sandstorm.xScale = size 
 		sandstorm.yScale = size 
 	end
+
+	local map = native.newMapView(0, 0, display.contentWidth, display.contetnHeight)
+
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		for i = #enemyTable, 1, -1 do
@@ -425,7 +427,7 @@ function scene:show( event )
 				size = (size + (math.log(enemySize) / 5))
 				updateText()
 				grow()
-		
+
 			elseif
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
@@ -460,16 +462,13 @@ function scene:show( event )
 
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-		-- timer.resume(gameLoopTimer)
-		-- timer.resume(spawnTimer)
-		-- timer.resume(robotTimer)
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		physics.start()
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
-		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
+		spawnTimer = timer.performWithDelay(1000, spawnEnemy, 0)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
