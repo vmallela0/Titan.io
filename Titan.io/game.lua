@@ -361,7 +361,7 @@ function scene:create( event )
 		sandstorm.y = display.contentCenterY
 
 		-- fade in sandstorm when spawned
-		transition.to(sandstorm, {alpha=1, time=3000,
+		transition.to(sandstorm, {alpha=1, time=5000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
 			end
