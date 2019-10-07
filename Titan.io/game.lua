@@ -177,16 +177,15 @@ local function updateText()
 end
 
 -- movement func, for now just draggin
--- change to joystick controls 
-local function dragSelf(event)
-	local sandstorm = event.target
-	local phase = event.phase
+-- local function dragSelf(event)
+-- 	local sandstorm = event.target
+-- 	local phase = event.phase
 
-	if("began" == phase) then 
-		display.currentStage:setFocus(sandstorm)
-		sandstorm.touchOffsetX = event.x - sandstorm.x
-		sandstorm.touchOffsetY = event.y - sandstorm.y
-	elseif("moved" == phase) then
+-- 	if("began" == phase) then 
+-- 		display.currentStage:setFocus(sandstorm)
+-- 		sandstorm.touchOffsetX = event.x - sandstorm.x
+-- 		sandstorm.touchOffsetY = event.y - sandstorm.y
+-- 	elseif("moved" == phase) then
 		-- timer.performWithDelay(200, function () 
 
 		--Please don't change this -->>
