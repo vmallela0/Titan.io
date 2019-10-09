@@ -361,9 +361,6 @@ function scene:show( event )
 		sandstorm.yScale = size 
 	end
 
-	local map = native.newMapView(0, 0, display.contentWidth, display.contentHeight)
-	map.mapType = "standard"
-
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		for i = #enemyTable, 1, -1 do
