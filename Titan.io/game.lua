@@ -119,7 +119,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = math.random(1, 10)
+	enemyScore = math.random(1, 5)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -157,9 +157,6 @@ local function spawnRobots()
 	robot.y = math.random(0, display.contentHeight)
 end
 
-local function spawnJoystick()
-	
-end
 --make sandstorm's radius applicable
 --function sandstorm()
 	--sandstorm.scale(radius)
@@ -194,17 +191,17 @@ local function joystickPadForce()
 end
 
 local function stopSelf()
-	if sandstorm.x >= display.contentWidth + 400 then
-		sandstorm.x = display.contentWidth + 400
+	if sandstorm.x >= display.contentWidth + 300 then
+		sandstorm.x = display.contentWidth + 300
 	end
-	if sandstorm.x <= -300 then
-		sandstorm.x = -300
+	if sandstorm.x <= -350 then
+		sandstorm.x = -350
 	end
-	if sandstorm.y <= 0 then
-		sandstorm.y = 0
+	if sandstorm.y <= 50 then
+		sandstorm.y = 50
 	end
-	if sandstorm.y >= 900 then
-		sandstorm.y = 900
+	if sandstorm.y >= 800 then
+		sandstorm.y = 800
 	end
 end
 
@@ -340,9 +337,16 @@ function scene:create( event )
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
 
+<<<<<<< Updated upstream
 	-- Event listener for joystick func
 	joystickPad:addEventListener("touch", joystickPadMove)
 	
+=======
+
+	-- Event listener for dragSelf func
+
+	joystickPad:addEventListener("touch", joystickPadMove)
+>>>>>>> Stashed changes
 end
 
 
@@ -357,7 +361,8 @@ function scene:show( event )
 		sandstorm.yScale = size 
 	end
 
-	local map = native.newMapView(0, 0, display.contentWidth, display.contetnHeight)
+	local map = native.newMapView(0, 0, display.contentWidth, display.contentHeight)
+	map.mapType = "standard"
 
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
@@ -429,7 +434,7 @@ function scene:show( event )
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
-		spawnTimer = timer.performWithDelay(1000, spawnEnemy, 0)
+		spawnTimer = timer.performWithDelay(2000, spawnEnemy, 0)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
