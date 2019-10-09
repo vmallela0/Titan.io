@@ -372,6 +372,7 @@ function scene:create( event )
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
 
+<<<<<<< Updated upstream
 
 	-- Event listener for dragSelf func
 	sandstorm:addEventListener("touch", dragSelf)
@@ -382,6 +383,11 @@ function scene:create( event )
 	-- Runtime:addEventListener("collision", joystickRightMove)
 	-- Runtime:addEventListener("collision", joystickBottomMove)
 
+=======
+	-- Event listener for joystick func
+	joystickPad:addEventListener("touch", joystickPadMove)
+	
+>>>>>>> Stashed changes
 end
 
 
@@ -396,8 +402,13 @@ function scene:show( event )
 		sandstorm.yScale = size 
 	end
 
+<<<<<<< Updated upstream
 	local map = native.newMapView(0, 0, display.contentWidth, display.contetnHeight)
 
+=======
+
+	
+>>>>>>> Stashed changes
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		for i = #enemyTable, 1, -1 do
