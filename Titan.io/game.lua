@@ -119,7 +119,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = math.random(1, 10)
+	enemyScore = math.random(1, 5)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -157,9 +157,6 @@ local function spawnRobots()
 	robot.y = math.random(0, display.contentHeight)
 end
 
-local function spawnJoystick()
-	
-end
 --make sandstorm's radius applicable
 --function sandstorm()
 	--sandstorm.scale(radius)
@@ -175,38 +172,6 @@ end
 local function updateText()
 	scoreText.text = "Score: ".. score
 end
-
-
--- movement func, for now just draggin
--- local function dragSelf(event)
--- -- 	local sandstorm = event.target
--- -- 	local phase = event.phase
-
--- -- 	if("began" == phase) then 
--- -- 		display.currentStage:setFocus(sandstorm)
--- -- 		sandstorm.touchOffsetX = event.x - sandstorm.x
--- -- 		sandstorm.touchOffsetY = event.y - sandstorm.y
--- -- 	elseif("moved" == phase) then
--- 		-- timer.performWithDelay(200, function () 
-
--- 		--Please don't change this -->>
--- 		sandstorm.x = event.x - sandstorm.touchOffsetX
--- 		sandstorm.y = event.y - sandstorm.touchOffsetY
--- 		-- Force applyer, doesnt work well
--- 		-- local fx = event.x - sandstorm.x
--- 		-- local fy = event.y - sandstorm.y
--- 		-- local fm = math.sqrt(fx * fx + fy * fy)
--- 		-- if fm > 0 then 
--- 		-- 	fx = fx / fm
--- 		-- 	fy = fy / fm
--- 		-- end
--- 		-- loc = .1
--- 		-- sandstorm:applyForce(fx, fy, sandstorm.x, sandstorm.y)
--- 	elseif("ended" == phase or "cancelled" == phase) then 
--- 		display.currentStage:setFocus(nil)
--- 	end
--- 	return true
--- end
 
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
@@ -226,17 +191,17 @@ local function joystickPadForce()
 end
 
 local function stopSelf()
-	if sandstorm.x >= display.contentWidth + 400 then
-		sandstorm.x = display.contentWidth + 400
+	if sandstorm.x >= display.contentWidth + 300 then
+		sandstorm.x = display.contentWidth + 300
 	end
-	if sandstorm.x <= -300 then
-		sandstorm.x = -300
+	if sandstorm.x <= -350 then
+		sandstorm.x = -350
 	end
-	if sandstorm.y <= 0 then
-		sandstorm.y = 0
+	if sandstorm.y <= 50 then
+		sandstorm.y = 50
 	end
-	if sandstorm.y >= 900 then
-		sandstorm.y = 900
+	if sandstorm.y >= 800 then
+		sandstorm.y = 800
 	end
 end
 
@@ -365,7 +330,7 @@ function scene:create( event )
 		sandstorm.y = display.contentCenterY
 
 		-- fade in sandstorm when spawned
-		transition.to(sandstorm, {alpha=1, time=3000,
+		transition.to(sandstorm, {alpha=1, time=5000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
 			end
@@ -392,8 +357,6 @@ function scene:show( event )
 		sandstorm.xScale = size 
 		sandstorm.yScale = size 
 	end
-
-
 	
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
@@ -465,7 +428,7 @@ function scene:show( event )
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
-		spawnTimer = timer.performWithDelay(1000, spawnEnemy, 0)
+		spawnTimer = timer.performWithDelay(2000, spawnEnemy, 0)
 		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
