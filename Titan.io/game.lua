@@ -337,16 +337,10 @@ function scene:create( event )
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
 
-<<<<<<< Updated upstream
-	-- Event listener for joystick func
-	joystickPad:addEventListener("touch", joystickPadMove)
-	
-=======
 
 	-- Event listener for dragSelf func
 
 	joystickPad:addEventListener("touch", joystickPadMove)
->>>>>>> Stashed changes
 end
 
 
