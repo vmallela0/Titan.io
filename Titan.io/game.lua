@@ -312,9 +312,13 @@ function scene:create( event )
 	sceneGroup:insert(uiGroup)
 
 	-- background
+	local container = display.newContainer(500, 500)
 	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+	container:insert(background, true)
+	container:translate(display.contentWidth / 2, display.contentHeight / 2)
+	-- background.x = display.contentCenterX
+	-- background.y = display.contentCenterY
+	transition.to( container, { rotation=360, transition=easing.inOutExpo} )
 
 	-- spawns joysticks
 	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
