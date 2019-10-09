@@ -360,7 +360,7 @@ function scene:show( event )
 		sandstorm.xScale = size 
 		sandstorm.yScale = size 
 	end
-
+	
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		for i = #enemyTable, 1, -1 do
