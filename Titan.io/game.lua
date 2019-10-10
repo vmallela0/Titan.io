@@ -209,14 +209,14 @@ end
 
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
-		fx = 100
+		fx = 200
 	elseif joystickPad.x + 62.5 < -200 then
-		fx = -100
+		fx = -200
 	end
 	if joystickPad.y + 62.5 <= 575 then
-		fy = -100
+		fy = -200
 	elseif joystickPad.y + 62.5 >= 700 then
-		fy = 100
+		fy = 200
 	end
 	if joystickPad.x == -207.5 and joystickPad.y == 580 then
 		fx = 0
