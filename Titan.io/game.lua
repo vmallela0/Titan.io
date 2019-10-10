@@ -319,7 +319,6 @@ function scene:create( event )
 	sandstorm.y = display.contentCenterY
 	sandstorm.alpha = 0
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
-	sandstorm:applyTorque(-15)
 
 	local function spawnSelf()
 		sandstorm.isBodyActive = false
@@ -331,10 +330,12 @@ function scene:create( event )
 		transition.to(sandstorm, {alpha=1, time=1000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
+				sandstorm:applyTorque(-15)
 			end
 		} )	
 	end
 	spawnSelf()
+
 
 	-- Sensor type the sandstorm
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
