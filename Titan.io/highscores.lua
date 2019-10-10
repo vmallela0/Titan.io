@@ -8,43 +8,9 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
--- initial variables
-local json = require("json")
-
-local scoresTable = {}
-
-local filePath = system.pathForFile("scores.json", system.DocumentsDirectory)
+-- background
 
 
-local function loadScores()
-
-	local file = io.open(filePath, "r")
-
-	if file then
-		local contents = file:read("*a")
-		io.close(file)
-		scoresTable = json.decode(contents)
-	end
-
-	if(scoresTable == nil or #scoresTable == 0) then
-		scoresTable = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	end
-end
-
-
-local function saveScores()
-
-	for i = #scoresTable, 11, -1 do 
-		table.remove(scoresTable, i)
-	end
-
-	local file = io.open(filePath, "w")
-
-	if file then
-		file:write(json.encode(scoresTable))
-		io.close(file)
-	end
-end
 
 
 -- -----------------------------------------------------------------------------------
@@ -56,16 +22,9 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-	
-	-- load previous scores
-	loadScores()
-
-	-- insert the saved score from last game into table, then reset
-	table.insert(scoresTable, composer.getVariable("finalScore"))
-	composer.setVariable("finalScore", 0)
-
-	-- sort the table entries from high -> low
-	local 
+	local background = display.newImageRect(sceneGroup, "gamebackground.png", 1400, 800)
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
 end
 
 
