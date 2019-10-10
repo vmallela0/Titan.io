@@ -317,6 +317,7 @@ function scene:create( event )
 	sandstorm = display.newImageRect(mainGroup, objectSheet, 2, 70, 70)
 	sandstorm.x = display.contentCenterX 
 	sandstorm.y = display.contentCenterY
+	sandstorm.alpha = 0
 	physics.addBody(sandstorm, "dynamic", { radius = 35, bounce = 0, isSensor = true})
 	sandstorm:applyTorque(-15)
 
@@ -326,12 +327,14 @@ function scene:create( event )
 		sandstorm.y = display.contentCenterY
 
 		-- fade in sandstorm when spawned
-		transition.to(sandstorm, {alpha=1, time=5000,
+
+		transition.to(sandstorm, {alpha=1, time=1000,
 			onComplete = function()
 				sandstorm.isBodyActive = true
 			end
 		} )	
 	end
+	spawnSelf()
 
 	-- Sensor type the sandstorm
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
@@ -339,7 +342,6 @@ function scene:create( event )
 
 
 	-- Event listener for dragSelf func
-
 	joystickPad:addEventListener("touch", joystickPadMove)
 end
 
