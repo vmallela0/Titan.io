@@ -56,11 +56,9 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-<<<<<<< HEAD
-	local background = display.newImageRect(sceneGroup, "background.png", 1400, 800)
+	local background = display.newImageRect(sceneGroup, "highscores.png", 1400, 800)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
-=======
 	
 	-- load previous scores
 	loadScores()
@@ -70,8 +68,15 @@ function scene:create( event )
 	composer.setVariable("finalScore", 0)
 
 	-- sort the table entries from high -> low
-	local 
->>>>>>> parent of 034e4d8... Revert "update game.lua"
+	local function compare(a, b)
+		return a > b 
+	end 
+	table.sort(scoresTable, compare)
+
+	-- save the scores
+	saveScores()
+
+	local highScoresHeader = display.newText(sceneGroup, "High Scores", display.contentCenterX, 100, native.systemFont, 75)
 end
 
 
