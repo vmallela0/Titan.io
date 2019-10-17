@@ -460,6 +460,7 @@ function scene:show( event )
 				size = (1 + (math.log(score) / 2))
 				if (score > highScore) then 
 					highScore = score
+				end
 				updateText()
 				grow()
 			end
