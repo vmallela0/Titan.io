@@ -150,6 +150,7 @@ local function spawnRobots()
 	end
 	table.insert(robotTable, robot)
 	-- robot:toFront()
+	robot:toFront()
 	robot.myName = "robot"
 	roboSize = math.random(1, 3)
 	robotSize = (math.random(1, 3) / 3)
