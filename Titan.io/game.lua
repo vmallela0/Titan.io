@@ -87,6 +87,7 @@ local fx = 0
 local fy = 0
 local moveX
 local moveY
+highScore = 0 
  
 
 local gameLoopTimer
@@ -457,6 +458,8 @@ function scene:show( event )
 				table.remove(robotSizeTable, n)
 				score = score + robotS
 				size = (1 + (math.log(score) / 2))
+				if (score > highScore) then 
+					highScore = score
 				updateText()
 				grow()
 			end
