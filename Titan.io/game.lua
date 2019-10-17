@@ -85,6 +85,8 @@ local joystickPad
 
 local fx = 0
 local fy = 0
+local moveX
+local moveY
  
 
 local gameLoopTimer
@@ -111,9 +113,9 @@ local function spawnEnemy()
 	-- do
 	-- we will need to add the enemyCount cap because it is finite and the map needs to be regulated
 		-- display spawn
-	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
+	local enemyStorm = display.newImageRect(backGroup, objectSheet, 3, 70, 70)
 	-- moves to back
-	enemyStorm:toBack()
+	enemyStorm:toFront()
 	-- enemy table for deletion
 	table.insert(enemyTable, enemyStorm)
 	--name
@@ -131,9 +133,9 @@ local function spawnEnemy()
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
 	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
 	-- random path
-	enemyStorm:setLinearVelocity(math.random(-30, 30), math.random(-30, 30))
+	enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
 	-- applies rotation
-	enemyStorm:applyTorque(10)
+	enemyStorm:applyTorque(20)
 		-- enemyCount=enemyCount+1
 	-- end
 end
@@ -141,12 +143,12 @@ end
 local function spawnRobots()
 	robotType = math.random(1, 2)
 	if robotType == 1 then
-		robot = display.newImageRect(mainGroup, objectSheet, 4, 69, 66)
+		robot = display.newImageRect(container, objectSheet, 4, 69, 66)
 	elseif robotType == 2 then
-		robot = display.newImageRect(mainGroup, objectSheet, 5, 67, 65)
+		robot = display.newImageRect(container, objectSheet, 5, 67, 65)
 	end
 	table.insert(robotTable, robot)
-	robot:toBack()
+	-- robot:toFront()
 	robot.myName = "robot"
 	roboSize = math.random(1, 3)
 	robotSize = (math.random(1, 3) / 3)
@@ -175,20 +177,55 @@ end
 
 local function joystickPadForce()
 	if joystickPad.x + 62.5 >= -100 then
-		fx = 200
+		-- fx = 100
+		moveX = -100
+		-- transition.moveBy( container, {x = -100} )
+
 	elseif joystickPad.x + 62.5 < -200 then
-		fx = -200
+		-- fx = -100
+		moveX = 100
+		-- transition.moveBy( container, {x = 100} )
+
 	end
 	if joystickPad.y + 62.5 <= 575 then
-		fy = -200
+		-- fy = -100 
+		moveY = 100
+
 	elseif joystickPad.y + 62.5 >= 700 then
-		fy = 200
+		-- fy = 100
+		moveY = -100
 	end
 	if joystickPad.x == -207.5 and joystickPad.y == 580 then
-		fx = 0
-		fy = 0
+		-- fx = 0
+		-- fy = 0
+		moveX = 0
+		moveY = 0
 	end
 end
+
+-- local function moveMap()
+-- 	if sandstorm.x >= 800 then
+-- 		-- transition.to( container, {x = sandstorm.x + 1000} )
+-- 		display.contentCenterX = sandstorm.x
+-- 		display.contentCenterY = sandstorm.y
+-- 	end
+-- 	if sandstorm.x <= display.contentCenterX then
+-- 		transition.to( container, {x = sandstorm.x - 1000} )
+-- 		sandstorm.x = display.contentCenterX 
+-- 		sandstorm.y = display.contentCenterY
+-- 	end
+-- 	if sandstorm.y >= display.contentCenterY then
+-- 		transition.to( container, {y = sandstorm.y - 1000} )
+-- 		sandstorm.x = display.contentCenterX 
+-- 		sandstorm.y = display.contentCenterY
+-- 	end
+-- 	if sandstorm.y <= display.contentCenterY then
+-- 		transition.to( container, {y = sandstorm.y + 1000} )
+-- 		sandstorm.x = display.contentCenterX 
+-- 		sandstorm.y = display.contentCenterY
+-- 	end
+-- end
+
 
 local function stopSelf()
 	if sandstorm.x >= display.contentWidth + 300 then
@@ -230,13 +267,13 @@ local function joystickPadMove(event)
 		display.currentStage:setFocus(joystickPad)
 		joystickOffsetX = event.x - joystickPad.x
 		joystickOffsetY = event.y - joystickPad.y
+
 	elseif ("moved" == phase) then
 		joystickPad.x = event.x - joystickOffsetX
 		joystickPad.y = event.y - joystickOffsetY
 		stopPad()
-		joystickPadForce()
-		sandstorm:setLinearVelocity(fx, fy, sandstorm.x, sandstorm.y)
 		stopSelf()
+		sandstorm:setLinearVelocity(fx, fy, sandstorm.x, sandstorm.y)
 	elseif("ended" == phase or "cancelled" == phase) then
 		display.currentStage:setFocus(nil)
 		joystickPad.x = -207.5
@@ -277,10 +314,14 @@ function scene:create( event )
 	sceneGroup:insert(uiGroup)
 
 	-- background
-	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+	container = display.newContainer(backGroup, display.actualContentWidth, display.actualContentHeight)
 
+	local background = display.newImageRect(container, "gamebackground.png", 1400, 800)
+	container:translate(display.contentWidth / 2, display.contentHeight / 2)
+	transition.to( container, { rotation = 360, transition = easing.inOutExpo} )
+	container.xScale = 5
+	container.yScale = 5
+	
 	-- spawns joysticks
 	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
 	physics.addBody( joystickTop, {bounce = 0, isSensor = true} )
@@ -360,6 +401,9 @@ function scene:show( event )
 	
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
+		joystickPadForce()
+		transition.moveBy( container, {x = moveX, y = moveY} )
+		-- moveMap()
 		for i = #enemyTable, 1, -1 do
 			local enemyS = scoreTable[i]
 			local deleteEnemy = enemyTable[i]
