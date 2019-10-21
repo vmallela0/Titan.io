@@ -144,21 +144,23 @@ end
 local function spawnRobots()
 	robotType = math.random(1, 2)
 	if robotType == 1 then
-		robot = display.newImageRect(container, objectSheet, 4, 69, 66)
+		robot = display.newImageRect(backGroup, objectSheet, 4, 69, 66)
+		robot:toFront()
 	elseif robotType == 2 then
-		robot = display.newImageRect(container, objectSheet, 5, 67, 65)
+		robot = display.newImageRect(backGroup, objectSheet, 5, 67, 65)
+		robot:toFront()
 	end
+	physics.addBody(robot, "static", { radius = 35})
 	table.insert(robotTable, robot)
 	-- robot:toFront()
-	robot:toFront()
-	robot.myName = "robot"
 	roboSize = math.random(1, 3)
-	robotSize = (math.random(1, 3) / 3)
+	robotSize = (roboSize / 2)
 	table.insert(robotSizeTable, roboSize)
 	robot.xScale = robotSize
 	robot.yScale = robotSize
-	robot.x = math.random(-500, display.contentWidth + 500)
-	robot.y = math.random(0, display.contentHeight)
+	robot.x = math.random(0, display.viewableContentWidth)
+	robot.y = math.random(0, display.viewableContentHeight)
+	robot.myName = "food"
 end
 
 --make sandstorm's radius applicable
@@ -316,13 +318,14 @@ function scene:create( event )
 	sceneGroup:insert(uiGroup)
 
 	-- background
-	container = display.newContainer(backGroup, display.actualContentWidth, display.actualContentHeight)
 
-	local background = display.newImageRect(container, "gamebackground.png", 1400, 800)
-	container:translate(display.contentWidth / 2, display.contentHeight / 2)
-	transition.to( container, { rotation = 360, transition = easing.inOutExpo} )
-	container.xScale = 5
-	container.yScale = 5
+	local background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
+	-- container:translate(display.contentWidth / 2, display.contentHeight / 2)
+	background.x = display.contentWidth / 2
+	background.y = display.contentHeight / 2
+	transition.to( background, { rotation = 360, transition = easing.inOutExpo} )
+	background.xScale = 5
+	background.yScale = 5
 	
 	-- spawns joysticks
 	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
@@ -385,8 +388,42 @@ function scene:create( event )
 	sandstorm.myName = "self"
 
 
+	-- local function onCollision(event)
+	-- 	if (event.phase == "began") then 
+	
+	-- 		local obj1 = event.object1
+	-- 		local obj2 = event.object2
+	
+	-- 		if (obj1.myName == "food" and obj2.myName == "self")
+	-- 		then 
+	-- 			display.remove(obj1)				
+	-- 			for i = #robotTable, 1, -1 do
+	-- 				if (robotTable[i] == obj1 or robotTable[i] == obj2) then 
+	-- 					table.remove(robotTable, i)
+	-- 					break
+	-- 				end
+	-- 			end
+	-- 			score = score + 2
+	-- 			updateText()
+	-- 		elseif (obj1.myName == "self" and obj2.myName == "food")
+	-- 		then 
+	-- 			display.remove(obj2)				
+	-- 			for i = #robotTable, 1, -1 do
+	-- 				if (robotTable[i] == obj2 or robotTable[i] == obj2) then 
+	-- 					table.remove(robotTable, i)
+	-- 					break
+	-- 				end
+	-- 			end
+	-- 			score = score + 2
+	-- 			updateText()
+	-- 		end
+	-- 	end
+	-- end
+
+
 	-- Event listener for dragSelf func
 	joystickPad:addEventListener("touch", joystickPadMove)
+	-- Runtime:addEventListener("collision", onCollision)
 end
 
 
@@ -400,17 +437,16 @@ function scene:show( event )
 		sandstorm.xScale = size 
 		sandstorm.yScale = size 
 	end
-	
+
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		joystickPadForce()
-		transition.moveBy( container, {x = moveX, y = moveY} )
-		-- moveMap()
+		transition.moveBy( backGroup, {x = moveX, y = moveY} )
 		for i = #enemyTable, 1, -1 do
 			local enemyS = scoreTable[i]
 			local deleteEnemy = enemyTable[i]
 			local enemyRealSize = 1 + math.log(enemyS)
-				
+
 			if 
 				deleteEnemy.x < -500 or deleteEnemy.x > display.contentWidth + 500 or
 				deleteEnemy.y < -100 or
@@ -429,15 +465,20 @@ function scene:show( event )
 				table.remove(enemyTable, i) 
 				table.remove(scoreTable, i)
 				-- updates score and size
-				score = score + (enemyS * 2)
-				size = (size + (math.log(enemySize) / 5))
+
+				local x = os.clock()
+				local s = 0
+				for i=1,100000 do s = s + i end
+
+				score = score + s + robotS
+				size = (size + (math.log(score) / 5))
 				updateText()
 				grow()
 
 			elseif
 				-- touches but size bigger (enemy eat)
-				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
-				deleteEnemy.y -(35 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y and
+				deleteEnemy.x -(30 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
+				deleteEnemy.y -(30 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y and
 				1 + math.log(enemyS) > size 
 			then 
 				-- turns blank
@@ -446,25 +487,26 @@ function scene:show( event )
 				timer.performWithDelay(1000, endGame)
 			end
 		end
-		for n = #robotTable, 1, -1 do
-			local deleteRobot = robotTable[n]
-			local robotS = robotSizeTable[n]
-
-			if 
-				sandstorm.x - (30 * size) <= deleteRobot.x and sandstorm.x + (30 * size) >= deleteRobot.x and
-				sandstorm.y - (30 * size) <= deleteRobot.y and sandstorm.y + (30 * size) >= deleteRobot.y
-			then
-				display.remove(deleteRobot)
-				table.remove(robotTable, n)
-				table.remove(robotSizeTable, n)
-				score = score + robotS
-				size = (1 + (math.log(score) / 2))
-				if (score > highScore) then 
-					highScore = score
-				end
-				updateText()
-				grow()
-			end
+		-- for n = #robotTable, 1, -1 do
+		-- 	local deleteRobot = robotTable[n]
+		-- 	local robotS = robotSizeTable[n]
+		-- 	if 
+		-- 		sandstorm.x - (60 * size) <= deleteRobot.x and sandstorm.x + (60 * size) >= deleteRobot.x and
+		-- 		sandstorm.y - (60 * size) <= deleteRobot.y and sandstorm.y + (60 * size) >= deleteRobot.y
+		-- 	then
+		-- 		display.remove(deleteRobot)
+		-- 		table.remove(robotTable, n)
+		-- 		table.remove(robotSizeTable, n)
+		-- 		score = score + robotS
+		-- 		size = (1 + (math.log(score) / 2))
+		-- 		updateText()
+		-- 		grow()
+		-- 		print("eat")
+		-- 		print(robotS)
+		-- 	end
+		-- end
+		if (score > highScore) then 
+			highScore = score
 		end
 	end
 
@@ -478,7 +520,7 @@ function scene:show( event )
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(2000, spawnEnemy, 0)
-		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
+		robotTimer = timer.performWithDelay(10000, spawnRobots, 0)
 	end
 end
 
