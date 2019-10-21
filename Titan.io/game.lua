@@ -61,7 +61,7 @@ local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
 
 --score and player info init
-local score = 0
+score = 0
 local died = false
 local size = 1
 
@@ -289,7 +289,7 @@ local function joystickPadMove(event)
 end
 
 local function endGame()
-	composer.gotoScene("menu", {time = 1000, effect = "crossFade"})
+	composer.gotoScene("gameover", {time = 1000, effect = "crossFade"})
 end
 
 
