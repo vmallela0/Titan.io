@@ -429,8 +429,13 @@ function scene:show( event )
 				table.remove(enemyTable, i) 
 				table.remove(scoreTable, i)
 				-- updates score and size
-				score = score + (enemyS * 2)
-				size = (size + (math.log(enemySize) / 5))
+
+				local x = os.clock()
+				local s = 0
+				for i=1,100000 do s = s + i end
+
+				score = score + s + robotS
+				size = (size + (math.log(score) / 5))
 				updateText()
 				grow()
 
