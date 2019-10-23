@@ -452,18 +452,20 @@ function scene:show( event )
 				deleteEnemy.y < -100 or
 				deleteEnemy.y > display.contentHeight + 100
 			then 
-				display.remove(deleteEnemy)
-				table.remove(enemyTable, i)
-				table.remove(scoreTable, i)
+				deleteEnemy = nil
+				-- display.remove(deleteEnemy)
+				-- table.remove(enemyTable, i)
+				-- table.remove(scoreTable, i)
 			elseif
 				sandstorm.x -(30 * size) <= deleteEnemy.x and sandstorm.x + (40 * size) >= deleteEnemy.x and 
 				sandstorm.y -(30 * size) <= deleteEnemy.y and sandstorm.y + (40 * size) >= deleteEnemy.y and
 				1 + math.log(enemyS) <= size 
 			then 
 				-- delete enemy
-				display.remove(deleteEnemy) -- deletes enemy
-				table.remove(enemyTable, i) 
-				table.remove(scoreTable, i)
+				deleteEnemy = nil
+				-- display.remove(deleteEnemy) -- deletes enemy
+				-- table.remove(enemyTable, i) 
+				-- table.remove(scoreTable, i)
 				-- updates score and size
 
 				local x = os.clock()
@@ -474,11 +476,12 @@ function scene:show( event )
 				size = (size + (math.log(score) / 5))
 				updateText()
 				grow()
-
-			elseif
+			end
+				if
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(30 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
-				deleteEnemy.y -(30 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y and
+				deleteEnemy.y -(30 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y 
+				and
 				1 + math.log(enemyS) > size 
 			then 
 				-- turns blank
