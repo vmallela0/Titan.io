@@ -442,37 +442,41 @@ function scene:show( event )
 	local function gameLoop()
 		joystickPadForce()
 		transition.moveBy( backGroup, {x = moveX, y = moveY} )
+		
 		for i = #enemyTable, 1, -1 do
 			local enemyS = scoreTable[i]
 			local deleteEnemy = enemyTable[i]
 			local enemyRealSize = 1 + math.log(enemyS)
 
-			if 
-				deleteEnemy.x < -500 or deleteEnemy.x > display.contentWidth + 500 or
-				deleteEnemy.y < -100 or
-				deleteEnemy.y > display.contentHeight + 100
-			then 
-				deleteEnemy = nil
-				-- display.remove(deleteEnemy)
-				-- table.remove(enemyTable, i)
-				-- table.remove(scoreTable, i)
-			elseif
+			-- if 
+			-- 	deleteEnemy.x < -500 or deleteEnemy.x > display.viewableContentWidth + 500 or
+			-- 	deleteEnemy.y < -500 or
+			-- 	--deleteEnemy.y > display.viewableContentHeight + 500
+			-- then 
+			-- 	deleteEnemy:removeSelf()
+				
+			-- 	-- display.remove(deleteEnemy)
+			-- 	table.remove(enemyTable, i)
+			-- 	table.remove(scoreTable, i)
+			-- else
+				if
 				sandstorm.x -(30 * size) <= deleteEnemy.x and sandstorm.x + (40 * size) >= deleteEnemy.x and 
 				sandstorm.y -(30 * size) <= deleteEnemy.y and sandstorm.y + (40 * size) >= deleteEnemy.y and
 				1 + math.log(enemyS) <= size 
 			then 
 				-- delete enemy
-				deleteEnemy = nil
+				deleteEnemy:removeSelf()
+
 				-- display.remove(deleteEnemy) -- deletes enemy
-				-- table.remove(enemyTable, i) 
-				-- table.remove(scoreTable, i)
+				table.remove(enemyTable, i) 
+				table.remove(scoreTable, i)
 				-- updates score and size
 
 				local x = os.clock()
 				local s = 0
-				for i=1,100000 do s = s + i end
+				for i=1,200 do s = s + i end
 
-				score = score + s + robotS
+				score = score + s
 				size = (size + (math.log(score) / 5))
 				updateText()
 				grow()
@@ -480,8 +484,7 @@ function scene:show( event )
 				if
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(30 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
-				deleteEnemy.y -(30 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y 
-				and
+				deleteEnemy.y -(30 * (enemyRealSize)) <= sandstorm.y and deleteEnemy.y + (35 * enemyRealSize) >= sandstorm.y and
 				1 + math.log(enemyS) > size 
 			then 
 				-- turns blank
