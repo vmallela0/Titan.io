@@ -41,7 +41,7 @@ function scene:create( event )
 	local load = display.newImageRect(sceneGroup, "load.png", 100, 100)
 	physics.addBody(load, "dynamic")
 	load.x = display.contentCenterX 
-	load.y = display.contentCenterY + 200
+	load.y = display.contentCenterY + 100
 
 	load:applyTorque(20)
 end
