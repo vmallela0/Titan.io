@@ -29,7 +29,7 @@ function scene:create( event )
 
 	endgameText = display.newText(sceneGroup, "GAME OVER", display.contentCenterX, 350, native.systemFont, 100)
 
-	scoreText = display.newText(sceneGroup, "Your final score was  "..score, display.contentCenterX, 450, native.systemFont, 50)
+	scoreText = display.newText(sceneGroup, "Your final score was:  "..score, display.contentCenterX, 450, native.systemFont, 50)
 
 	local menuButton = display.newText(sceneGroup, "🡐 Back to Menu", display.contentCenterX, 530, native.systemFont, 50)
 	menuButton:addEventListener("tap", gotoMenu)

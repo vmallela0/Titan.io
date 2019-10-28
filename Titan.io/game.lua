@@ -122,7 +122,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = (math.random(1,1.5)) * (score+1)
+	enemyScore = (math.random(1)) * (score + 1)
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -132,7 +132,7 @@ local function spawnEnemy()
 	-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
 	enemyStorm.x = math.random(0, display.contentWidth + 100)
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
-	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 0.8})
+	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 5})
 	-- random path
 	enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
 	-- applies rotation
@@ -461,7 +461,6 @@ function scene:show( event )
 				sandstorm.alpha = 0
 				sandstorm.isBodyActive = false
 				timer.performWithDelay(1000, endGame)
-			
 
 			elseif
 				sandstorm.x >= 1400 or sandstorm.x <= 0 or 
