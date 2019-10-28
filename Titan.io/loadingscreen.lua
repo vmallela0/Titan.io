@@ -35,7 +35,7 @@ function scene:create( event )
 
 	local playButton = display.newText(sceneGroup, "Loading...", display.contentCenterX, 455, native.systemFont, 100)
 	playButton.x = display.contentCenterX
-	playButton.y = display.contentCenterY - 100
+	playButton.y = display.contentCenterY - 200
 
 
 	local load = display.newImageRect(sceneGroup, "load.png", 100, 100)
@@ -43,7 +43,7 @@ function scene:create( event )
 	load.x = display.contentCenterX 
 	load.y = display.contentCenterY + 200
 
-	load:applyTorque(100)
+	load:applyTorque(20)
 end
 
 
@@ -87,7 +87,6 @@ function scene:destroy( event )
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
 	-- physics.pause()
-
 
 end
 
