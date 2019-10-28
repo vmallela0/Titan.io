@@ -151,8 +151,8 @@ local function spawnRobots()
 	table.insert(robotTable, robot)
 	-- robot:toFront()
 	robot.myName = "robot"
-	roboSize = math.random(1, 3)
-	robotSize = (math.random(1, 3) / 3)
+	roboSize = math.random(1, 2) / 10
+	robotSize = (math.random(1, 2) / 10)
 	table.insert(robotSizeTable, roboSize)
 	robot.xScale = robotSize
 	robot.yScale = robotSize
@@ -260,6 +260,7 @@ local function stopPad()
 end
 
 
+
 local function joystickPadMove(event)
 	local joystickPad = event.target
 	local phase = event.phase
@@ -292,6 +293,7 @@ local function endGame()
 end
 
 local function crackHeadFunc()
+	
 	for s = #enemyTable, 1, -1 do
 		local sandstormChaos = enemyTable[s]
 		sandstormChaos:setLinearVelocity(math.random(-420, 420), math.random(-420, 420))
@@ -319,7 +321,7 @@ function scene:create( event )
 	uiGroup = display.newGroup()
 	sceneGroup:insert(uiGroup)
 
-	-- background
+	-- 
 	container = display.newContainer(backGroup, display.actualContentWidth, display.actualContentHeight)
 
 	local background = display.newImageRect(container, "gamebackground.png", 1400, 800)
@@ -333,21 +335,28 @@ function scene:create( event )
 	physics.addBody( joystickTop, {bounce = 0, isSensor = true} )
 	joystickTop.x = -75
 	joystickTop.y = 600
+	joystickTop.alpha = .6
 
 	joystickLeft = display.newImageRect(uiGroup, "joystick.png", 400, 400)
 	physics.addBody( joystickLeft, {bounce = 0, isSensor = true} )
 	joystickLeft.x = -175
 	joystickLeft.y = 700
+	joystickLeft.alpha = .6
+
 
 	joystickRight = display.newImageRect(uiGroup, "joystick.png", 400, 400)
 	physics.addBody( joystickRight, {bounce = 0, isSensor = true} )
 	joystickRight.x = 25
 	joystickRight.y = 700
+	joystickRight.alpha = .6
+
 
 	joystickBottom = display.newImageRect(uiGroup, "joystick.png", 400, 400)
 	physics.addBody( joystickBottom, {bounce = 0, isSensor = true} )
 	joystickBottom.x = -75
 	joystickBottom.y = 800
+	joystickBottom.alpha = .6
+
 
 	joystickPad = display.newImageRect(uiGroup, objectSheet, 6, 125, 125)
 	physics.addBody( joystickPad, { bounce = 0, isSensor = true } )
@@ -355,6 +364,7 @@ function scene:create( event )
 	joystickPad.yScale = .75
 	joystickPad.x = -207.5
 	joystickPad.y = 580
+	joystickPad.alpha = .9
 
 	-- score Text 
 	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
@@ -423,10 +433,10 @@ function scene:show( event )
 			-- 	table.remove(enemyTable, i)
 			-- 	table.remove(scoreTable, i)
 			-- else
-				if
-				sandstorm.x -(30 * size) <= deleteEnemy.x and sandstorm.x + (40 * size) >= deleteEnemy.x and 
-				sandstorm.y -(30 * size) <= deleteEnemy.y and sandstorm.y + (40 * size) >= deleteEnemy.y and
-				1 + math.log(enemyS) <= size 
+			if
+			sandstorm.x -(30 * size) <= deleteEnemy.x and sandstorm.x + (40 * size) >= deleteEnemy.x and 
+			sandstorm.y -(30 * size) <= deleteEnemy.y and sandstorm.y + (40 * size) >= deleteEnemy.y and
+			1 + math.log(enemyS) <= size  
 			then 
 				-- delete enemy
 				deleteEnemy:removeSelf()
@@ -440,7 +450,7 @@ function scene:show( event )
 				size = (size + (math.log(score) / 5))
 				updateText()
 				grow()
-
+			
 			elseif
 				-- touches but size bigger (enemy eat)
 				deleteEnemy.x -(35 * (enemyRealSize)) <= sandstorm.x and deleteEnemy.x + (35 * enemyRealSize) >= sandstorm.x and 
@@ -451,7 +461,17 @@ function scene:show( event )
 				sandstorm.alpha = 0
 				sandstorm.isBodyActive = false
 				timer.performWithDelay(1000, endGame)
-			end
+			
+
+			elseif
+				sandstorm.x >= 1400 or sandstorm.x <= 0 or 
+				sandstorm.y >= 800 or sandstorm.y <= 0   
+			then 
+				-- turns blank
+				sandstorm.alpha = 0
+				sandstorm.isBodyActive = false
+				timer.performWithDelay(1000, endGame)
+			end	
 		end
 		for n = #robotTable, 1, -1 do
 			local deleteRobot = robotTable[n]
