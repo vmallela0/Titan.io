@@ -13,6 +13,9 @@ local function gotoMenu()
 	composer.gotoScene("menu", {time=500, effect="crossFade"} )
 end
 
+local function updateText()
+	scoreText.text = "Your final score was: ".. composer.getVariable("gameScore")
+end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -21,19 +24,20 @@ end
 function scene:create( event )
 
 	local sceneGroup = self.view
-	-- Code here runs when the scene is first created but has not yet appeared on screen
 
+
+	-- Code here runs when the scene is first created but has not yet appeared on screen
 	local background = display.newImageRect(sceneGroup,"highscores.png", 1400, 800)
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
 	endgameText = display.newText(sceneGroup, "GAME OVER", display.contentCenterX, 350, native.systemFont, 100)
-
-	scoreText = display.newText(sceneGroup, "Your final score was:  "..score, display.contentCenterX, 450, native.systemFont, 50)
-
+	scoreText = display.newText(sceneGroup, "Your final score was:  "..composer.getVariable("gameScore")
+	, display.contentCenterX, 450, native.systemFont, 50)
 	local menuButton = display.newText(sceneGroup, "🡐 Back to Menu", display.contentCenterX, 530, native.systemFont, 50)
 	menuButton:addEventListener("tap", gotoMenu)
 	menuButton:toFront()
+
 end
 
 
@@ -43,9 +47,10 @@ function scene:show( event )
 	local sceneGroup = self.view
 	local phase = event.phase
 
+
 	if ( phase == "will" ) then
 		-- Code here runs when the scene is still off screen (but is about to come on screen)
-
+		updateText()
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 
@@ -64,7 +69,6 @@ function scene:hide( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
-
 	end
 end
 

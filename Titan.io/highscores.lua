@@ -127,7 +127,6 @@ function scene:hide(event)
 
 	elseif (phase == "did") then
 		-- Code here runs immediately after the scene goes entirely off screen
-		composer.removeScene("highscores")
 	end
 end
 

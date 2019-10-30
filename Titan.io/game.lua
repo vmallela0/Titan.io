@@ -62,7 +62,7 @@ local objectSheet = graphics.newImageSheet("spritesheet2.png", sheetOptions)
 
 
 --score and player info init
-score = 0
+local score = 0
 local died = false
 local size = 1
 
@@ -290,6 +290,8 @@ end
 
 local function endGame()
 	composer.setVariable("finalScore", score)
+	composer.setVariable("gameScore", score)
+
 	composer.gotoScene("gameover", {time = 1000, effect = "crossFade"})
 end
 
@@ -504,7 +506,7 @@ function scene:show( event )
 		-- game timer
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
-		spawnTimer = timer.performWithDelay(2000, spawnEnemy, 0)
+		spawnTimer = timer.performWithDelay(500, spawnEnemy, 0)
 		-- robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
