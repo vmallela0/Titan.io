@@ -83,6 +83,7 @@ local joystickLeft
 local joystickRight
 local joystickBottom
 local joystickPad
+local background
 
 local fx = 0
 local fy = 0
@@ -114,7 +115,7 @@ local function spawnEnemy()
 	-- do
 	-- we will need to add the enemyCount cap because it is finite and the map needs to be regulated
 		-- display spawn
-	local enemyStorm = display.newImageRect(backGroup, objectSheet, 3, 70, 70)
+	local enemyStorm = display.newImageRect(mainGroup, objectSheet, 3, 70, 70)
 	-- moves to back
 	enemyStorm:toFront()
 	-- enemy table for deletion
@@ -122,7 +123,7 @@ local function spawnEnemy()
 	--name
 	enemyStorm.myName = "enemy"
 	-- random score/ size of enemy
-	enemyScore = (math.random(1)) * (score + 1)
+	enemyScore = (math.random(1, score + 1))
 	-- score table for later
 	table.insert(scoreTable, enemyScore)
 	enemySize = 1 + math.log(enemyScore)
@@ -132,7 +133,7 @@ local function spawnEnemy()
 	-- we need to scale ALL numbers to the screen size. We need to have flexibility in platforms. 
 	enemyStorm.x = math.random(0, display.contentWidth + 100)
 	enemyStorm.y = math.random(0, display.contentHeight + 100)
-	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 5})
+	physics.addBody(enemyStorm, "dynamic", { radius = 35, bounce = 2})
 	-- random path
 	enemyStorm:setLinearVelocity(math.random(-100, 100), math.random(-100, 100))
 	-- applies rotation
@@ -141,24 +142,23 @@ local function spawnEnemy()
 	-- end
 end
 
-local function spawnRobots()
-	robotType = math.random(1, 2)
-	if robotType == 1 then
-		robot = display.newImageRect(container, objectSheet, 4, 69, 66)
-	elseif robotType == 2 then
-		robot = display.newImageRect(container, objectSheet, 5, 67, 65)
-	end
-	table.insert(robotTable, robot)
-	-- robot:toFront()
-	robot.myName = "robot"
-	roboSize = math.random(1, 2) / 10
-	robotSize = (math.random(1, 2) / 10)
-	table.insert(robotSizeTable, roboSize)
-	robot.xScale = robotSize
-	robot.yScale = robotSize
-	robot.x = math.random(-500, display.contentWidth + 500)
-	robot.y = math.random(0, display.contentHeight)
-end
+-- local function spawnRobots()
+-- 	robotType = math.random(1, 2)
+-- 	if robotType == 1 then
+-- 		robot = display.newImageRect(background, objectSheet, 4, 69, 66)
+-- 	elseif robotType == 2 then
+-- 		robot = display.newImageRect(background, objectSheet, 5, 67, 65)
+-- 	end
+-- 	table.insert(robotTable, robot)
+-- 	-- robot:toFront()
+-- 	roboSize = math.random(1, 2) / 10
+-- 	robotSize = (math.random(1, 2) / 10)
+-- 	table.insert(robotSizeTable, roboSize)
+-- 	robot.xScale = robotSize
+-- 	robot.yScale = robotSize
+-- 	robot.x = math.random(-500, display.contentWidth + 500)
+-- 	robot.y = math.random(0, display.contentHeight)
+-- end
 
 --make sandstorm's radius applicable
 --function sandstorm()
@@ -289,6 +289,7 @@ local function joystickPadMove(event)
 end
 
 local function endGame()
+	composer.setVariable("finalScore", score)
 	composer.gotoScene("gameover", {time = 1000, effect = "crossFade"})
 end
 
@@ -299,6 +300,7 @@ local function crackHeadFunc()
 		sandstormChaos:setLinearVelocity(math.random(-420, 420), math.random(-420, 420))
 	end
 end
+
 
 -- -----------------------------------------------------------------------------------------------------------------
 -- Scene event functions
@@ -322,13 +324,13 @@ function scene:create( event )
 	sceneGroup:insert(uiGroup)
 
 	-- 
-	container = display.newContainer(backGroup, display.actualContentWidth, display.actualContentHeight)
+	-- container = display.newContainer(backGroup, display.actualContentWidth, display.actualContentHeight)
 
-	local background = display.newImageRect(container, "gamebackground.png", 1400, 800)
-	container:translate(display.contentWidth / 2, display.contentHeight / 2)
-	transition.to( container, { rotation = 360, transition = easing.inOutExpo} )
-	container.xScale = 5
-	container.yScale = 5
+	background = display.newImageRect(backGroup, "gamebackground.png", 1400, 800)
+	background:translate(display.contentWidth / 2, display.contentHeight / 2)
+	transition.to( background, { rotation = 360, transition = easing.inOutExpo} )
+	background.xScale = 5
+	background.yScale = 5
 	
 	-- spawns joysticks
 	joystickTop = display.newImageRect(uiGroup, "joystick.png", 400, 400)
@@ -364,10 +366,10 @@ function scene:create( event )
 	joystickPad.yScale = .75
 	joystickPad.x = -207.5
 	joystickPad.y = 580
-	joystickPad.alpha = .9
+	joystickPad.alpha = .98
 
 	-- score Text 
-	scoreText = display.newText(uiGroup, "Score "..score, 500, 80, native.systemFont, 36)
+	scoreText = display.newText(uiGroup, "Score "..score, display.contentCenterX, 50, native.systemFont, 36)
 	scoreText:setFillColor(0, 0, 0)
 
 	-- spawn self
@@ -390,6 +392,8 @@ function scene:create( event )
 		} )	
 	end
 
+	
+
 	-- Sensor type the sandstorm
 	-- physics.addBody(sandstorm, {radius = 30, isSensor = true})
 	sandstorm.myName = "self"
@@ -410,12 +414,28 @@ function scene:show( event )
 		sandstorm.xScale = size 
 		sandstorm.yScale = size 
 	end
+
+	-- local function boundaries()
+	-- 	if sandstorm.x >= background.x + (background.width / 2 )then
+	-- 		sandstorm.x = background.x + (background.width / 2)
+	-- 	end
+	-- 	if sandstorm.x <= background.x then
+	-- 		sandstorm.x = background.x
+	-- 	end
+	-- 	if sandstorm.y >= background.y + (background.height / 2) then
+	-- 		sandstorm.y = background.y + (background.height / 2)
+	-- 	end
+	-- 	if sandstorm.y >= background.y then
+	-- 		sandstorm.y = background.y
+	-- 	end
+	-- end
 	
 	-- gameLoop -- deletes enemy too
 	local function gameLoop()
 		joystickPadForce()
 		crackHeadFunc()
-		transition.moveBy( container, {x = moveX, y = moveY} )
+		-- boundaries()
+		transition.moveBy( background, {x = moveX, y = moveY} )
 		-- moveMap()
 		for i = #enemyTable, 1, -1 do
 			local enemyS = scoreTable[i]
@@ -462,6 +482,7 @@ function scene:show( event )
 				sandstorm.isBodyActive = false
 				timer.performWithDelay(1000, endGame)
 
+
 			elseif
 				sandstorm.x >= 1400 or sandstorm.x <= 0 or 
 				sandstorm.y >= 800 or sandstorm.y <= 0   
@@ -471,23 +492,6 @@ function scene:show( event )
 				sandstorm.isBodyActive = false
 				timer.performWithDelay(1000, endGame)
 			end	
-		end
-		for n = #robotTable, 1, -1 do
-			local deleteRobot = robotTable[n]
-			local robotS = robotSizeTable[n]
-
-			if 
-				sandstorm.x - (30 * size) <= deleteRobot.x and sandstorm.x + (30 * size) >= deleteRobot.x and
-				sandstorm.y - (30 * size) <= deleteRobot.y and sandstorm.y + (30 * size) >= deleteRobot.y
-			then
-				display.remove(deleteRobot)
-				table.remove(robotTable, n)
-				table.remove(robotSizeTable, n)
-				score = score + robotS
-				size = (1 + (math.log(score) / 2))
-				updateText()
-				grow()
-			end
 		end
 	end
 
@@ -501,7 +505,7 @@ function scene:show( event )
 		gameLoopTimer = timer.performWithDelay(100, gameLoop, 0)
 		-- spawn timer
 		spawnTimer = timer.performWithDelay(2000, spawnEnemy, 0)
-		robotTimer = timer.performWithDelay(500, spawnRobots, 0)
+		-- robotTimer = timer.performWithDelay(500, spawnRobots, 0)
 	end
 end
 
@@ -516,7 +520,7 @@ function scene:hide( event )
 		-- Code here runs when the scene is on screen (but is about to go off screen)
 		timer.cancel(gameLoopTimer)
 		timer.cancel(spawnTimer)
-		timer.cancel(robotTimer)
+		-- timer.cancel(robotTimer)
 
 	elseif ( phase == "did" ) then
 		-- Code here runs immediately after the scene goes entirely off screen
